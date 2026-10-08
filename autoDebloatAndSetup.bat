@@ -49,29 +49,31 @@ echo ================================================================
 echo       ANDROID SAFE DEBLOATER ^& KERNELSU SETUP TOOL
 echo ================================================================
 echo.
-echo  [1] FULL AUTOMATION (Install KernelSU + Run Safe Debloat)
-echo  [2] Run Safe Debloat Only (Includes Aperture, Bard, OmniJaws, etc.)
-echo  [3] Install / Reinstall KernelSU Next Manager APK
-echo  [4] Setup Google Camera (MGC) as System App (Replace Aperture)
-echo  [5] Restore Debloated Apps
-echo  [6] Check Device ^& Root Status
+echo  [1] FULL AUTOMATION (Install KernelSU + Safe Debloat + GCam)
+echo  [2] Run Safe Debloat Script (Package Uninstaller)
+echo  [3] Install KernelSU Safe Debloat Module (Systemless OverlayFS)
+echo  [4] Setup Google Camera (MGC) System App (Only GCam Install ^& Camera Removal)
+echo  [5] Install / Reinstall KernelSU Next Manager APK
+echo  [6] Restore Debloated Apps
+echo  [7] Check Device ^& Root Status
 echo  [0] Exit
 echo.
 echo ================================================================
 set "choice="
-set /p "choice=Select an option [0-6]: "
+set /p "choice=Select an option [0-7]: "
 
 :PROCESS_CHOICE
 if "%choice%"=="1" goto FULL_SETUP
 if "%choice%"=="2" goto RUN_DEBLOAT
-if "%choice%"=="3" goto INSTALL_KSU
+if "%choice%"=="3" goto SETUP_DEBLOAT_MOD
 if "%choice%"=="4" goto SETUP_GCAM
-if "%choice%"=="5" goto RESTORE_APPS
-if "%choice%"=="6" goto CHECK_STATUS
+if "%choice%"=="5" goto INSTALL_KSU
+if "%choice%"=="6" goto RESTORE_APPS
+if "%choice%"=="7" goto CHECK_STATUS
 if "%choice%"=="0" exit /b 0
 
 echo.
-echo Invalid choice. Please select a valid number [0-6].
+echo Invalid choice. Please select a valid number [0-7].
 if "%CLI_MODE%"=="1" exit /b 1
 ping 127.0.0.1 -n 2 >nul
 goto MENU
@@ -110,7 +112,7 @@ exit /b 0
 
 :FIND_KSU_APK
 set "KSU_APK="
-if exist "%APK_DIR%\KernelSU_Next_v3.3.0_33214-release.apk" set "KSU_APK=%APK_DIR%\KernelSU_Next_v3.3.0_33214-release.apk"
+if exist "%APK_DIR%\KernelSU_Next_v3.4.0_33294-release.apk" set "KSU_APK=%APK_DIR%\KernelSU_Next_v3.4.0_33294-release.apk"
 if not defined KSU_APK (
     for %%f in ("%APK_DIR%\KernelSU*.apk" "%BASE_DIR%KernelSU*.apk") do (
         if exist "%%~f" set "KSU_APK=%%~f"
@@ -243,10 +245,47 @@ if "%CLI_MODE%"=="1" exit /b 0
 pause
 goto MENU
 
+:SETUP_DEBLOAT_MOD
+cls
+echo ================================================================
+echo        INSTALLING SYSTEM SAFE DEBLOAT KERNELSU MODULE
+echo ================================================================
+call :DETECT_ROOT
+set "DEBLOAT_MOD_SCRIPT=%SCRIPTS_DIR%\setupDebloatModule.sh"
+if not exist "!DEBLOAT_MOD_SCRIPT!" set "DEBLOAT_MOD_SCRIPT=%BASE_DIR%setupDebloatModule.sh"
+
+if not exist "!DEBLOAT_MOD_SCRIPT!" (
+    echo [ERROR] setupDebloatModule.sh not found!
+    if "%CLI_MODE%"=="1" exit /b 1
+    pause
+    goto MENU
+)
+
+if "%HAS_ROOT%"=="0" (
+    echo [ERROR] Root [su] is required to configure KernelSU modules!
+    if "%CLI_MODE%"=="1" exit /b 1
+    pause
+    goto MENU
+)
+
+echo.
+echo [INFO] Configuring KernelSU Systemless Module for Safe Debloat...
+adb.exe push "!DEBLOAT_MOD_SCRIPT!" /data/local/tmp/setupDebloatModule.sh >nul 2>&1
+adb.exe shell "su -c 'sh /data/local/tmp/setupDebloatModule.sh'"
+adb.exe shell rm -f /data/local/tmp/setupDebloatModule.sh >nul 2>&1
+
+echo.
+echo ================================================================
+echo [SUCCESS] KernelSU Safe Debloat Module installed successfully!
+echo ================================================================
+if "%CLI_MODE%"=="1" exit /b 0
+pause
+goto MENU
+
 :SETUP_GCAM
 cls
 echo ================================================================
-echo      INSTALLING GOOGLE CAMERA (MGC) AS SYSTEM APP
+echo  INSTALLING GOOGLE CAMERA (MGC) & REMOVING STOCK SYSTEM CAMERA
 echo ================================================================
 call :DETECT_ROOT
 call :FIND_GCAM_APK

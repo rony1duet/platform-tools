@@ -35,6 +35,10 @@ os.makedirs(vendor_vintf_dir, exist_ok=True)
 # 2. Copy compiled APK
 shutil.copy2(os.path.join(base_dir, 'apk', 'LunarisDolby.apk'), os.path.join(sys_app_dir, 'LunarisDolby.apk'))
 
+dolby_mgr_dir = os.path.join(mod_dir, 'system', 'system_ext', 'priv-app', 'DolbyManager')
+os.makedirs(dolby_mgr_dir, exist_ok=True)
+shutil.copy2(os.path.join(base_dir, 'apk', 'LunarisDolby.apk'), os.path.join(dolby_mgr_dir, 'DolbyManager.apk'))
+
 # 3. Copy permissions and sysconfig
 shutil.copy2(os.path.join(base_dir, 'dolby_dump', 'permissions', 'privapp-permissions-dolby.xml'), os.path.join(sys_perm_dir, 'privapp-permissions-dolby.xml'))
 shutil.copy2(os.path.join(base_dir, 'dolby_dump', 'permissions', 'preinstalled-packages-platform-dolby.xml'), os.path.join(sys_sysconfig_dir, 'preinstalled-packages-platform-dolby.xml'))
@@ -48,12 +52,7 @@ shutil.copy2(os.path.join(base_dir, 'dolby_dump', 'vendor_etc', 'media_codecs_do
 shutil.copy2(os.path.join(base_dir, 'dolby_dump', 'vendor_etc', 'vendor.dolby.hardware.dms@2.0-service.xml'), os.path.join(vendor_vintf_dir, 'vendor.dolby.hardware.dms@2.0-service.xml'))
 shutil.copy2(os.path.join(base_dir, 'dolby_dump', 'vendor_etc', 'vendor.dolby.media.c2.xml'), os.path.join(vendor_vintf_dir, 'vendor.dolby.media.c2.xml'))
 
-# 5.5 Replace old co.aospa.dolby app and overlay
-old_dolby_dir = os.path.join(mod_dir, 'system', 'system_ext', 'priv-app', 'DolbyManager')
-os.makedirs(old_dolby_dir, exist_ok=True)
-with open(os.path.join(old_dolby_dir, '.replace'), 'w') as f:
-    pass
-
+# 5.5 Replace old overlay
 old_overlay_dir = os.path.join(mod_dir, 'system', 'product', 'overlay', 'DolbyManager__custom_sweet2__auto_generated_rro_product')
 os.makedirs(old_overlay_dir, exist_ok=True)
 with open(os.path.join(old_overlay_dir, '.replace'), 'w') as f:
@@ -123,20 +122,20 @@ pm disable-user --user 0 co.aospa.dolby >/dev/null 2>&1
 pm uninstall -k --user 0 co.aospa.dolby >/dev/null 2>&1
 pm disable-user --user 0 co.aospa.dolby.auto_generated_rro_product__ >/dev/null 2>&1
 pm uninstall -k --user 0 co.aospa.dolby.auto_generated_rro_product__ >/dev/null 2>&1
+pm uninstall org.lunaris.dolby >/dev/null 2>&1
 
 ui_print "- Installing Lunaris Dolby Atmos..."
-mkdir -p $MODPATH/system/system_ext/priv-app/DolbyManager
-touch $MODPATH/system/system_ext/priv-app/DolbyManager/.replace
 mkdir -p $MODPATH/system/product/overlay/DolbyManager__custom_sweet2__auto_generated_rro_product
 touch $MODPATH/system/product/overlay/DolbyManager__custom_sweet2__auto_generated_rro_product/.replace
 
 set_perm_recursive $MODPATH 0 0 0755 0644
+set_perm $MODPATH/system/system_ext/priv-app/DolbyManager/DolbyManager.apk 0 0 0644
 set_perm $MODPATH/system/system_ext/priv-app/LunarisDolby/LunarisDolby.apk 0 0 0644
 set_perm $MODPATH/system/product/overlay/DolbyFrameworksResCommon.apk 0 0 0644
 
 ui_print "- Verifying installation..."
-if [ -f $MODPATH/system/system_ext/priv-app/LunarisDolby/LunarisDolby.apk ]; then
-  ui_print "- LunarisDolby APK staged successfully!"
+if [ -f $MODPATH/system/system_ext/priv-app/DolbyManager/DolbyManager.apk ]; then
+  ui_print "- LunarisDolby APK staged successfully as system priv-app!"
 fi
 
 ui_print "- Installation complete! Please reboot your device to apply system mounts."

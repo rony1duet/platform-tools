@@ -10,24 +10,18 @@ rm -rf "$MODDIR"
 mkdir -p "$MODDIR/system/product/app/GoogleCameraEng/lib/arm64"
 mkdir -p "$MODDIR/system/product/app/Aperture"
 mkdir -p "$MODDIR/system/product/app/ApertureLensLauncher"
-mkdir -p "$MODDIR/system/product/app/VoiceAccessPrebuilt"
-mkdir -p "$MODDIR/system/product/priv-app/RecorderPrebuilt_847964105"
-mkdir -p "$MODDIR/system/system_ext/app/OmniJaws"
 
-# Mask out replaced & debloated system apps
+# Mask out stock system camera apps
 touch "$MODDIR/system/product/app/Aperture/.replace"
 touch "$MODDIR/system/product/app/ApertureLensLauncher/.replace"
-touch "$MODDIR/system/product/app/VoiceAccessPrebuilt/.replace"
-touch "$MODDIR/system/product/priv-app/RecorderPrebuilt_847964105/.replace"
-touch "$MODDIR/system/system_ext/app/OmniJaws/.replace"
 
 cat << 'EOF' > "$MODDIR/module.prop"
 id=gcam_system
-name=Google Camera (MGC) System App & Safe Debloat
+name=Google Camera (MGC) System App
 version=9.6.080
 versionCode=96080
 author=BSG / MGC
-description=Installs Google Camera (MGC 9.6.080) as a system camera app replacing Aperture, and debloats Aperture, OmniJaws, VoiceAccess, and Recorder.
+description=Installs Google Camera (MGC 9.6.080) as the system camera app and systemlessly replaces the stock Aperture camera.
 EOF
 
 # Find source APK

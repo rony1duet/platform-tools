@@ -1,0 +1,3 @@
+[submodule "LunarisDolby"]
+	path = LunarisDolby
+	url = https://github.com/rony1duet/LunarisDolby.git

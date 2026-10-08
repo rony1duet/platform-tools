@@ -22,9 +22,10 @@ platform-tools/
 │   └── ...
 │
 ├── apk/                          # Android application packages
-│   ├── KernelSU_Next_v3.3.0_33214-release.apk
+│   ├── KernelSU_Next_v3.4.0_33294-release.apk
 │   ├── LunarisDolby.apk          # Rebuilt Lunaris Dolby Atmos APK (rony1duet credit)
-│   └── MGC_9.6.080_V51_ENG.apk
+│   ├── MGC_9.6.080_V51_ENG.apk
+│   └── GCam_Config_sweet_k6a.xml
 │
 ├── LunarisDolby/                 # Lunaris Dolby Atmos source code repo
 │   └── src/org/lunaris/dolby/ui/components/CreditsDialog.kt
@@ -32,6 +33,7 @@ platform-tools/
 └── scripts/                      # Native Android shell scripts
     ├── debloatSu.sh
     ├── restoreSu.sh
+    ├── setupDebloatModule.sh
     └── setupGcamModule.sh
 ```
 
@@ -48,12 +50,13 @@ platform-tools/
       ANDROID SAFE DEBLOATER & KERNELSU SETUP TOOL
 ================================================================
 
- [1] FULL AUTOMATION (Install KernelSU + Run Safe Debloat)
- [2] Run Safe Debloat Only (Includes Aperture, Bard, OmniJaws, etc.)
- [3] Install / Reinstall KernelSU Next Manager APK
- [4] Setup Google Camera (MGC) as System App (Replace Aperture)
- [5] Restore Debloated Apps
- [6] Check Device & Root Status
+ [1] FULL AUTOMATION (Install KernelSU + Safe Debloat + GCam)
+ [2] Run Safe Debloat Script (Package Uninstaller)
+ [3] Install KernelSU Safe Debloat Module (Systemless OverlayFS)
+ [4] Setup Google Camera (MGC) System App (Only GCam Install & Camera Removal)
+ [5] Install / Reinstall KernelSU Next Manager APK
+ [6] Restore Debloated Apps
+ [7] Check Device & Root Status
  [0] Exit
 ```
 
@@ -66,8 +69,9 @@ platform-tools/
 | **`autoDebloatAndSetup.bat`** | **Master one-click automation tool for Windows.** Automatically locates `adb/`, `apk/`, and `scripts/`, checks root, runs installs, debloats, and refreshes the launcher. |
 | **`scripts/debloatSu.sh`** | Native Android root shell script targeting standalone bloatware (Facebook suite, LinkedIn, Netflix, Mi Home, Google consumer apps, Aperture, Bard, OmniJaws, VoiceAccess, Recorder). |
 | **`scripts/restoreSu.sh`** | Native Android root shell script that re-installs and re-enables debloated packages. |
-| **`scripts/setupGcamModule.sh`** | Native Android root shell script that builds the KernelSU systemless module for Google Camera (MGC 9.6.080), extracts 64-bit native libraries, and masks Aperture, OmniJaws, VoiceAccess, and Recorder. |
-| **`apk/`** | Contains official APKs for KernelSU Next Manager and Google Camera (MGC 9.6.080 V51 ENG). |
+| **`scripts/setupDebloatModule.sh`** | Native Android root shell script that creates a KernelSU systemless module to mask unwanted system apps via overlayfs. |
+| **`scripts/setupGcamModule.sh`** | Native Android root shell script that builds the KernelSU systemless module for Google Camera (MGC 9.6.080), extracts 64-bit native libraries, and replaces the stock Aperture camera. |
+| **`apk/`** | Contains official APKs for KernelSU Next Manager v3.4.0, Google Camera (MGC 9.6.080 V51 ENG), Lunaris Dolby Atmos, and device configs. |
 | **`adb/`** | Official Google Android SDK platform tools binaries and Windows drivers. |
 | **`appList.txt`** | Reference list of known package names across Android distributions. |
 | **`readMe.md`** | Project documentation and usage guide. |

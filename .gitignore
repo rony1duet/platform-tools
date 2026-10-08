@@ -1,11 +1,63 @@
-# Build tools & temporary decompilation output
+# Local SDK/build tools and decompilation outputs
 tools/
+*_out/
 dolby_apktool_out/
 stock_dolby_out/
 ksu_apk_out/
-*.tmp
-*.xml
+sweet2_overlay_out/
+
+# Android Studio / Gradle / Build directories
+.gradle/
+build/
+bin/
+gen/
+out/
+.idea/
+*.iml
+local.properties
+.externalNativeBuild/
+.cxx/
+
+# Generated module staging directory (rebuilt cleanly by create_module.py)
+LunarisDolby_Magisk_Module/
+
+# Intermediate APK build & signing artifacts
+*.idsig
+*-aligned-signed.apk
+*_unsigned.apk
 *.class
+*.tmp
+*.bak
+*.log
+
+# Keystores & private certificates
 *.p12
 *.pk8
 *.pem
+*.jks
+*.keystore
+
+# UIAutomator dumps & screen captures in root
+/*.png
+/*.jpg
+/*.jpeg
+/*.mp4
+/*_dump*.xml
+/adv_tab.xml
+/cur_dump.xml
+/perapp_tab.xml
+/perapp_now.xml
+/window_dump.xml
+
+# Python byte-code and cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.venv/
+env/
+venv/
+
+# Operating System files
+.DS_Store
+Thumbs.db
+Desktop.ini
