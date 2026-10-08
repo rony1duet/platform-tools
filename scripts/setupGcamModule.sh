@@ -1,0 +1,74 @@
+#!/system/bin/sh
+set -e
+
+echo "================================================================"
+echo " Setting up Google Camera (MGC) as System App via KernelSU"
+echo "================================================================"
+
+MODDIR="/data/adb/modules/gcam_system"
+rm -rf "$MODDIR"
+mkdir -p "$MODDIR/system/product/app/GoogleCameraEng/lib/arm64"
+mkdir -p "$MODDIR/system/product/app/Aperture"
+mkdir -p "$MODDIR/system/product/app/ApertureLensLauncher"
+mkdir -p "$MODDIR/system/product/app/VoiceAccessPrebuilt"
+mkdir -p "$MODDIR/system/product/priv-app/RecorderPrebuilt_847964105"
+mkdir -p "$MODDIR/system/system_ext/app/OmniJaws"
+
+# Mask out replaced & debloated system apps
+touch "$MODDIR/system/product/app/Aperture/.replace"
+touch "$MODDIR/system/product/app/ApertureLensLauncher/.replace"
+touch "$MODDIR/system/product/app/VoiceAccessPrebuilt/.replace"
+touch "$MODDIR/system/product/priv-app/RecorderPrebuilt_847964105/.replace"
+touch "$MODDIR/system/system_ext/app/OmniJaws/.replace"
+
+cat << 'EOF' > "$MODDIR/module.prop"
+id=gcam_system
+name=Google Camera (MGC) System App & Safe Debloat
+version=9.6.080
+versionCode=96080
+author=BSG / MGC
+description=Installs Google Camera (MGC 9.6.080) as a system camera app replacing Aperture, and debloats Aperture, OmniJaws, VoiceAccess, and Recorder.
+EOF
+
+# Find source APK
+BASE_APK=$(pm path com.google.android.GoogleCameraEng 2>/dev/null | head -n 1 | sed 's/package://')
+if [ -z "$BASE_APK" ] || [ ! -f "$BASE_APK" ]; then
+    if [ -f "/data/local/tmp/MGC_9.6.080_V51_ENG.apk" ]; then
+        BASE_APK="/data/local/tmp/MGC_9.6.080_V51_ENG.apk"
+    elif [ -f "/data/local/tmp/GoogleCameraEng.apk" ]; then
+        BASE_APK="/data/local/tmp/GoogleCameraEng.apk"
+    fi
+fi
+
+if [ -z "$BASE_APK" ] || [ ! -f "$BASE_APK" ]; then
+    echo "[ERROR] GoogleCameraEng APK was not found on device!"
+    exit 1
+fi
+
+echo "[INFO] Source APK: $BASE_APK"
+cp "$BASE_APK" "$MODDIR/system/product/app/GoogleCameraEng/GoogleCameraEng.apk"
+
+# Copy or extract 64-bit native libraries
+LIB_DIR="$(dirname "$BASE_APK")/lib/arm64"
+if [ -d "$LIB_DIR" ] && [ "$(ls -A "$LIB_DIR" 2>/dev/null)" ]; then
+    echo "[INFO] Copying native libraries from $LIB_DIR..."
+    cp -a "$LIB_DIR"/* "$MODDIR/system/product/app/GoogleCameraEng/lib/arm64/"
+else
+    echo "[INFO] Extracting native libraries from APK..."
+    unzip -j -o "$BASE_APK" "lib/arm64-v8a/*.so" -d "$MODDIR/system/product/app/GoogleCameraEng/lib/arm64/" >/dev/null 2>&1 || true
+fi
+
+# Set proper permissions and SELinux contexts
+chmod -R 755 "$MODDIR"
+chmod 644 "$MODDIR/module.prop"
+find "$MODDIR/system" -type f -exec chmod 644 {} +
+find "$MODDIR/system" -type d -exec chmod 755 {} +
+chown -R root:root "$MODDIR"
+chcon -R u:object_r:system_file:s0 "$MODDIR/system" 2>/dev/null || true
+
+echo "================================================================"
+echo " [SUCCESS] KernelSU Module configured successfully!"
+echo "================================================================"
+if [ -x "/data/adb/ksud" ]; then
+    /data/adb/ksud module list
+fi
