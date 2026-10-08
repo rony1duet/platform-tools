@@ -7,22 +7,40 @@ echo "================================================================"
 
 MODDIR="/data/adb/modules/system_safe_debloat"
 rm -rf "$MODDIR"
+mkdir -p "$MODDIR/system/product/priv-app/SafetyHubPrebuilt"
+mkdir -p "$MODDIR/system/product/priv-app/SafetyHub"
+mkdir -p "$MODDIR/system/product/app/SafetyHubPrebuilt"
 mkdir -p "$MODDIR/system/product/app/VoiceAccessPrebuilt"
 mkdir -p "$MODDIR/system/product/priv-app/RecorderPrebuilt_847964105"
+mkdir -p "$MODDIR/system/product/priv-app/RecorderPrebuilt"
 mkdir -p "$MODDIR/system/system_ext/app/OmniJaws"
 
 # Systemlessly mask out unwanted bloatware apps
+touch "$MODDIR/system/product/priv-app/SafetyHubPrebuilt/.replace"
+touch "$MODDIR/system/product/priv-app/SafetyHub/.replace"
+touch "$MODDIR/system/product/app/SafetyHubPrebuilt/.replace"
 touch "$MODDIR/system/product/app/VoiceAccessPrebuilt/.replace"
 touch "$MODDIR/system/product/priv-app/RecorderPrebuilt_847964105/.replace"
+touch "$MODDIR/system/product/priv-app/RecorderPrebuilt/.replace"
 touch "$MODDIR/system/system_ext/app/OmniJaws/.replace"
+
+# Disable and uninstall for current user immediately
+pm disable-user --user 0 com.google.android.apps.safetyhub 2>/dev/null || true
+pm uninstall -k --user 0 com.google.android.apps.safetyhub 2>/dev/null || true
+pm disable-user --user 0 com.google.android.apps.accessibility.voiceaccess 2>/dev/null || true
+pm uninstall -k --user 0 com.google.android.apps.accessibility.voiceaccess 2>/dev/null || true
+pm disable-user --user 0 com.google.android.apps.recorder 2>/dev/null || true
+pm uninstall -k --user 0 com.google.android.apps.recorder 2>/dev/null || true
+pm disable-user --user 0 org.omnirom.omnijaws 2>/dev/null || true
+pm uninstall -k --user 0 org.omnirom.omnijaws 2>/dev/null || true
 
 cat << 'EOF' > "$MODDIR/module.prop"
 id=system_safe_debloat
 name=System Safe Debloat
-version=1.0
-versionCode=100
+version=1.1
+versionCode=110
 author=Md Rony Hossen (rony1duet)
-description=Systemlessly debloats bloatware apps for EvolutionX OS (OmniJaws, VoiceAccess, Recorder) via overlayfs masking.
+description=Systemlessly debloats bloatware apps for AOSP/ PixelOS / EvolutionX OS (Safety Hub, OmniJaws, VoiceAccess, Recorder) via overlayfs masking.
 EOF
 
 chmod -R 755 "$MODDIR"

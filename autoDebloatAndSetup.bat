@@ -298,6 +298,10 @@ if "%HAS_ROOT%"=="0" (
 )
 
 echo.
+if exist "%BASE_DIR%System_Safe_Debloat_Module.zip" (
+    echo [INFO] Copying flashable System_Safe_Debloat_Module.zip to /sdcard/Download/...
+    adb.exe push "%BASE_DIR%System_Safe_Debloat_Module.zip" /sdcard/Download/System_Safe_Debloat_Module.zip >nul 2>&1
+)
 echo [INFO] Configuring KernelSU Systemless Module for Safe Debloat...
 adb.exe push "!DEBLOAT_MOD_SCRIPT!" /data/local/tmp/setupDebloatModule.sh >nul 2>&1
 adb.exe shell "su -c 'sh /data/local/tmp/setupDebloatModule.sh'"
@@ -353,6 +357,10 @@ if exist "!GCAM_CONFIG!" (
 )
 
 echo.
+if exist "%BASE_DIR%GCam_System_Module.zip" (
+    echo [INFO] Copying flashable GCam_System_Module.zip to /sdcard/Download/...
+    adb.exe push "%BASE_DIR%GCam_System_Module.zip" /sdcard/Download/GCam_System_Module.zip >nul 2>&1
+)
 echo [INFO] Configuring KernelSU Systemless Module for Google Camera...
 adb.exe push "!GCAM_SCRIPT!" /data/local/tmp/setupGcamModule.sh >nul 2>&1
 adb.exe shell "su -c 'sh /data/local/tmp/setupGcamModule.sh'"

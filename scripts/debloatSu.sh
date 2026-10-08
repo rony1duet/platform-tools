@@ -33,6 +33,7 @@ com.google.android.apps.bard
 org.omnirom.omnijaws
 com.google.android.apps.accessibility.voiceaccess
 com.google.android.apps.recorder
+com.google.android.apps.safetyhub
 "
 
 removed_count=0

@@ -9,8 +9,12 @@ A reliable, bootloop-proof debloater, KernelSU installer, and Google Camera syst
 ```text
 platform-tools/
 ├── autoDebloatAndSetup.bat       # Master one-click launcher (Windows)
-├── LunarisDolby_Magisk_Module.zip # Flashable Magisk/KernelSU module
-├── create_module.py              # Generator script for Magisk/KernelSU module
+├── LunarisDolby_Magisk_Module.zip # Flashable Magisk/KernelSU Dolby Atmos module
+├── create_module.py              # Generator script for Dolby Atmos module
+├── System_Safe_Debloat_Module.zip # Flashable Magisk/KernelSU Safe Debloat module
+├── create_debloat_module.py      # Generator script for Safe Debloat module
+├── GCam_System_Module.zip        # Flashable Magisk/KernelSU Google Camera module
+├── create_gcam_module.py         # Generator script for Google Camera module
 ├── appList.txt                   # Reference package catalog
 ├── readMe.md                     # Project documentation
 │
@@ -67,7 +71,13 @@ platform-tools/
 | Path | Description |
 | :--- | :--- |
 | **`autoDebloatAndSetup.bat`** | **Master one-click automation tool for Windows.** Automatically locates `adb/`, `apk/`, and `scripts/`, checks root, runs installs, debloats, and refreshes the launcher. |
-| **`scripts/debloatSu.sh`** | Native Android root shell script targeting standalone bloatware (Facebook suite, LinkedIn, Netflix, Mi Home, Google consumer apps, Aperture, Bard, OmniJaws, VoiceAccess, Recorder). |
+| **`create_debloat_module.py`** | Python generator that packages the flashable `System_Safe_Debloat_Module.zip` KernelSU/Magisk debloat module with overlayfs masks and boot persistence. |
+| **`System_Safe_Debloat_Module.zip`** | Flashable KernelSU/Magisk module that systemlessly masks out bloatware (Safety Hub, OmniJaws, VoiceAccess, Recorder). |
+| **`create_gcam_module.py`** | Python generator that compiles `GCam_System_Module.zip` with 64-bit native libraries, sweet k6a configuration, and Aperture masking. |
+| **`GCam_System_Module.zip`** | Flashable KernelSU/Magisk module that installs Google Camera (MGC 9.6.080) as a system app and imports tuned preferences. |
+| **`create_module.py`** | Python generator that packages the flashable `LunarisDolby_Magisk_Module.zip` with permissions, configs, and platform overlays. |
+| **`LunarisDolby_Magisk_Module.zip`** | Flashable Magisk/KernelSU module containing modern Compose Material 3 Lunaris Dolby Atmos. |
+| **`scripts/debloatSu.sh`** | Native Android root shell script targeting standalone bloatware (Facebook suite, LinkedIn, Netflix, Mi Home, Google consumer apps, Aperture, Bard, OmniJaws, VoiceAccess, Recorder, Safety Hub). |
 | **`scripts/restoreSu.sh`** | Native Android root shell script that re-installs and re-enables debloated packages. |
 | **`scripts/setupDebloatModule.sh`** | Native Android root shell script that creates a KernelSU systemless module to mask unwanted system apps via overlayfs. |
 | **`scripts/setupGcamModule.sh`** | Native Android root shell script that builds the KernelSU systemless module for Google Camera (MGC 9.6.080), extracts 64-bit native libraries, and replaces the stock Aperture camera. |

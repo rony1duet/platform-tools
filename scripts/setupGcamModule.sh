@@ -20,8 +20,8 @@ id=gcam_system
 name=Google Camera (MGC) System App
 version=9.6.080
 versionCode=96080
-author=BSG / MGC
-description=Installs Google Camera (MGC 9.6.080) as the system camera app and systemlessly replaces the stock Aperture camera.
+author=BSG / MGC (rony1duet)
+description=Systemlessly installs Google Camera (MGC 9.6.080) with 64-bit native libraries and Sweet (Redmi Note 10 Pro) tuning, replacing stock Aperture camera.
 EOF
 
 # Find source APK

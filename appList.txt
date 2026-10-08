@@ -1245,3 +1245,5 @@ pm uninstall --user 0 com.miui.phrase
 pm uninstall --user 0 com.miui.misound
 
 pm uninstall --user 0 com.miui.aod
+
+pm uninstall -k --user 0 com.google.android.apps.safetyhub

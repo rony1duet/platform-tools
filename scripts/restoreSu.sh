@@ -31,6 +31,7 @@ org.lineageos.aperture
 org.omnirom.omnijaws
 com.google.android.apps.accessibility.voiceaccess
 com.google.android.apps.recorder
+com.google.android.apps.safetyhub
 "
 
 restored_count=0

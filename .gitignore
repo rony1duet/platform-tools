@@ -18,8 +18,13 @@ local.properties
 .externalNativeBuild/
 .cxx/
 
-# Generated module staging directory (rebuilt cleanly by create_module.py)
+# Generated module staging directories (rebuilt cleanly by generator scripts)
 LunarisDolby_Magisk_Module/
+System_Safe_Debloat_Module/
+GCam_System_Module/
+
+# Large generated flashable module package (>100MB exceeds GitHub push limits; rebuilt via create_gcam_module.py)
+GCam_System_Module.zip
 
 # Intermediate APK build & signing artifacts
 *.idsig
