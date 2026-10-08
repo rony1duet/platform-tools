@@ -21,8 +21,8 @@ id=system_safe_debloat
 name=System Safe Debloat
 version=1.0
 versionCode=100
-author=rony1duet
-description=Systemlessly debloats bloatware apps (OmniJaws, VoiceAccess, Recorder) via overlayfs masking.
+author=Md Rony Hossen (rony1duet)
+description=Systemlessly debloats bloatware apps for EvolutionX OS (OmniJaws, VoiceAccess, Recorder) via overlayfs masking.
 EOF
 
 chmod -R 755 "$MODDIR"

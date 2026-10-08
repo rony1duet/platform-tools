@@ -60,8 +60,42 @@ find "$MODDIR/system" -type d -exec chmod 755 {} +
 chown -R root:root "$MODDIR"
 chcon -R u:object_r:system_file:s0 "$MODDIR/system" 2>/dev/null || true
 
+# Import & Inject GCam XML Configuration if available
+CONFIG_SRC="/data/local/tmp/GCam_Config.xml"
+if [ ! -f "$CONFIG_SRC" ]; then
+    for cand in /data/local/tmp/GCam_Config*.xml /data/local/tmp/*sweet*.xml; do
+        if [ -f "$cand" ]; then
+            CONFIG_SRC="$cand"
+            break
+        fi
+    done
+fi
+
+if [ -f "$CONFIG_SRC" ]; then
+    echo "[INFO] Importing GCam XML configuration: $CONFIG_SRC"
+    mkdir -p /sdcard/GCam/Configs9
+    mkdir -p /sdcard/GCam/Configs8
+    mkdir -p /sdcard/Download
+    cp "$CONFIG_SRC" /sdcard/GCam/Configs9/GCam_Config_sweet_k6a.xml 2>/dev/null || true
+    cp "$CONFIG_SRC" /sdcard/GCam/Configs8/GCam_Config_sweet_k6a.xml 2>/dev/null || true
+    cp "$CONFIG_SRC" /sdcard/Download/GCam_Config_sweet_k6a.xml 2>/dev/null || true
+    cp "$CONFIG_SRC" /sdcard/Download/MGC.cfg 2>/dev/null || true
+
+    PREFS_DIR="/data/data/com.google.android.GoogleCameraEng/shared_prefs"
+    if [ -d "/data/data/com.google.android.GoogleCameraEng" ]; then
+        mkdir -p "$PREFS_DIR"
+        GCAM_UID=$(stat -c "%u" /data/data/com.google.android.GoogleCameraEng 2>/dev/null || echo "10000")
+        cp "$CONFIG_SRC" "$PREFS_DIR/com.google.android.GoogleCameraEng_preferences.xml"
+        chown -R "$GCAM_UID:$GCAM_UID" "$PREFS_DIR" 2>/dev/null || true
+        chmod 660 "$PREFS_DIR/com.google.android.GoogleCameraEng_preferences.xml" 2>/dev/null || true
+        restorecon -R /data/data/com.google.android.GoogleCameraEng 2>/dev/null || true
+        echo "[SUCCESS] Configuration applied directly to camera preferences!"
+    fi
+    rm -f "$CONFIG_SRC" 2>/dev/null || true
+fi
+
 echo "================================================================"
-echo " [SUCCESS] KernelSU Module configured successfully!"
+echo " [SUCCESS] KernelSU Module & GCam Config configured successfully!"
 echo "================================================================"
 if [ -x "/data/adb/ksud" ]; then
     /data/adb/ksud module list

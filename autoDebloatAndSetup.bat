@@ -176,8 +176,37 @@ adb.exe shell am force-stop com.android.launcher3 >nul 2>&1
 adb.exe shell rm -f /data/local/tmp/debloatSu.sh >nul 2>&1
 
 echo.
+echo --- Step 3: Installing Google Camera (MGC) & Importing Config ---
+call :FIND_GCAM_APK
+if defined GCAM_APK (
+    echo [INFO] Found APK: !GCAM_APK!
+    adb.exe install -r -d -g "!GCAM_APK!"
+)
+set "GCAM_CONFIG=%APK_DIR%\GCam_Config_sweet_k6a.xml"
+if not exist "!GCAM_CONFIG!" set "GCAM_CONFIG=%BASE_DIR%GCam_Config_sweet_k6a.xml"
+if exist "!GCAM_CONFIG!" (
+    echo [INFO] Pushing GCam XML config to device...
+    adb.exe push "!GCAM_CONFIG!" /data/local/tmp/GCam_Config.xml >nul 2>&1
+)
+set "GCAM_SCRIPT=%SCRIPTS_DIR%\setupGcamModule.sh"
+if not exist "!GCAM_SCRIPT!" set "GCAM_SCRIPT=%BASE_DIR%setupGcamModule.sh"
+if exist "!GCAM_SCRIPT!" (
+    if "%HAS_ROOT%"=="1" (
+        echo [INFO] Configuring KernelSU Systemless Module for Google Camera...
+        adb.exe push "!GCAM_SCRIPT!" /data/local/tmp/setupGcamModule.sh >nul 2>&1
+        adb.exe shell "su -c 'sh /data/local/tmp/setupGcamModule.sh'"
+        adb.exe shell rm -f /data/local/tmp/setupGcamModule.sh >nul 2>&1
+        adb.exe shell "pm disable-user --user 0 org.lineageos.aperture 2>/dev/null; pm uninstall -k --user 0 org.lineageos.aperture 2>/dev/null"
+    )
+)
+
+adb.exe shell am force-stop com.miui.home >nul 2>&1
+adb.exe shell am force-stop com.google.android.apps.nexuslauncher >nul 2>&1
+adb.exe shell am force-stop com.android.launcher3 >nul 2>&1
+
+echo.
 echo ================================================================
-echo [SUCCESS] Full setup and safe debloat completed successfully!
+echo [SUCCESS] Full setup, debloat, and GCam configuration finished!
 echo Home screen refreshed.
 echo ================================================================
 if "%CLI_MODE%"=="1" exit /b 0
@@ -313,6 +342,14 @@ if defined GCAM_APK (
     adb.exe install -r -d -g "!GCAM_APK!"
 ) else (
     echo [INFO] No local GCam APK found, checking existing installation on device...
+)
+
+set "GCAM_CONFIG=%APK_DIR%\GCam_Config_sweet_k6a.xml"
+if not exist "!GCAM_CONFIG!" set "GCAM_CONFIG=%BASE_DIR%GCam_Config_sweet_k6a.xml"
+if exist "!GCAM_CONFIG!" (
+    echo.
+    echo [INFO] Pushing GCam XML config to device...
+    adb.exe push "!GCAM_CONFIG!" /data/local/tmp/GCam_Config.xml >nul 2>&1
 )
 
 echo.

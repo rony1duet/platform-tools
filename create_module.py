@@ -103,9 +103,9 @@ with open(os.path.join(meta_dir, 'update-binary'), 'w', newline='\n') as f:
 # 8. module.prop
 module_prop_content = '''id=lunaris_dolby_atmos
 name=Lunaris Dolby Atmos
-version=v1.0 (rony1duet)
+version=1.0
 versionCode=100
-author=rony1duet (MD RONY HOSSEN)
+author=MD RONY HOSSEN (rony1duet)
 description=Lunaris Dolby Atmos with modern Compose Material 3 UI for AOSP custom ROMs. Replaces stock co.aospa.dolby. Maintained by rony1duet.
 '''
 with open(os.path.join(mod_dir, 'module.prop'), 'w', newline='\n') as f:
@@ -114,7 +114,7 @@ with open(os.path.join(mod_dir, 'module.prop'), 'w', newline='\n') as f:
 # 9. customize.sh
 customize_content = '''ui_print "**************************************************"
 ui_print "           Lunaris Dolby Atmos Module             "
-ui_print "       Maintained by rony1duet (MD RONY)          "
+ui_print "       Maintained by MD RONY HOSSEN (rony1duet)   "
 ui_print "**************************************************"
 
 ui_print "- Removing stock co.aospa.dolby..."
