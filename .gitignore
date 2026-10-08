@@ -1,4 +1,11 @@
 # Build tools & temporary decompilation output
 tools/
 dolby_apktool_out/
+stock_dolby_out/
+ksu_apk_out/
 *.tmp
+*.xml
+*.class
+*.p12
+*.pk8
+*.pem

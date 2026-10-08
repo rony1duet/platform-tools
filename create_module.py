@@ -48,6 +48,17 @@ shutil.copy2(os.path.join(base_dir, 'dolby_dump', 'vendor_etc', 'media_codecs_do
 shutil.copy2(os.path.join(base_dir, 'dolby_dump', 'vendor_etc', 'vendor.dolby.hardware.dms@2.0-service.xml'), os.path.join(vendor_vintf_dir, 'vendor.dolby.hardware.dms@2.0-service.xml'))
 shutil.copy2(os.path.join(base_dir, 'dolby_dump', 'vendor_etc', 'vendor.dolby.media.c2.xml'), os.path.join(vendor_vintf_dir, 'vendor.dolby.media.c2.xml'))
 
+# 5.5 Replace old co.aospa.dolby app and overlay
+old_dolby_dir = os.path.join(mod_dir, 'system', 'system_ext', 'priv-app', 'DolbyManager')
+os.makedirs(old_dolby_dir, exist_ok=True)
+with open(os.path.join(old_dolby_dir, '.replace'), 'w') as f:
+    pass
+
+old_overlay_dir = os.path.join(mod_dir, 'system', 'product', 'overlay', 'DolbyManager__custom_sweet2__auto_generated_rro_product')
+os.makedirs(old_overlay_dir, exist_ok=True)
+with open(os.path.join(old_overlay_dir, '.replace'), 'w') as f:
+    pass
+
 # 6. updater-script
 with open(os.path.join(meta_dir, 'updater-script'), 'w', newline='\n') as f:
     f.write('#MAGISK\n')
@@ -96,7 +107,7 @@ name=Lunaris Dolby Atmos
 version=v1.0 (rony1duet)
 versionCode=100
 author=rony1duet (MD RONY HOSSEN)
-description=Lunaris Dolby Atmos with modern Compose Material 3 UI for AOSP custom ROMs. Maintained by rony1duet.
+description=Lunaris Dolby Atmos with modern Compose Material 3 UI for AOSP custom ROMs. Replaces stock co.aospa.dolby. Maintained by rony1duet.
 '''
 with open(os.path.join(mod_dir, 'module.prop'), 'w', newline='\n') as f:
     f.write(module_prop_content)
@@ -107,7 +118,17 @@ ui_print "           Lunaris Dolby Atmos Module             "
 ui_print "       Maintained by rony1duet (MD RONY)          "
 ui_print "**************************************************"
 
+ui_print "- Removing stock co.aospa.dolby..."
+pm disable-user --user 0 co.aospa.dolby >/dev/null 2>&1
+pm uninstall -k --user 0 co.aospa.dolby >/dev/null 2>&1
+pm disable-user --user 0 co.aospa.dolby.auto_generated_rro_product__ >/dev/null 2>&1
+pm uninstall -k --user 0 co.aospa.dolby.auto_generated_rro_product__ >/dev/null 2>&1
+
 ui_print "- Installing Lunaris Dolby Atmos..."
+mkdir -p $MODPATH/system/system_ext/priv-app/DolbyManager
+touch $MODPATH/system/system_ext/priv-app/DolbyManager/.replace
+mkdir -p $MODPATH/system/product/overlay/DolbyManager__custom_sweet2__auto_generated_rro_product
+touch $MODPATH/system/product/overlay/DolbyManager__custom_sweet2__auto_generated_rro_product/.replace
 
 set_perm_recursive $MODPATH 0 0 0755 0644
 set_perm $MODPATH/system/system_ext/priv-app/LunarisDolby/LunarisDolby.apk 0 0 0644
@@ -118,10 +139,31 @@ if [ -f $MODPATH/system/system_ext/priv-app/LunarisDolby/LunarisDolby.apk ]; the
   ui_print "- LunarisDolby APK staged successfully!"
 fi
 
-ui_print "- Installation complete! Please reboot your device."
+ui_print "- Installation complete! Please reboot your device to apply system mounts."
 '''
 with open(os.path.join(mod_dir, 'customize.sh'), 'w', newline='\n') as f:
     f.write(customize_content)
+
+# 9.5 service.sh (Boot service)
+service_content = '''#!/system/bin/sh
+MODDIR=${0%/*}
+
+# Wait for boot completion
+until [ "$(getprop sys.boot_completed)" = "1" ]; do
+  sleep 2
+done
+
+# Ensure stock co.aospa.dolby is disabled
+pm disable-user --user 0 co.aospa.dolby >/dev/null 2>&1
+pm disable-user --user 0 co.aospa.dolby.auto_generated_rro_product__ >/dev/null 2>&1
+
+# Ensure LunarisDolby permissions and appops
+pm grant org.lunaris.dolby android.permission.MODIFY_AUDIO_ROUTING >/dev/null 2>&1
+pm grant org.lunaris.dolby android.permission.RECORD_AUDIO >/dev/null 2>&1
+appops set org.lunaris.dolby GET_USAGE_STATS allow >/dev/null 2>&1
+'''
+with open(os.path.join(mod_dir, 'service.sh'), 'w', newline='\n') as f:
+    f.write(service_content)
 
 # 10. Create Flashable ZIP
 zip_filename = os.path.join(base_dir, 'LunarisDolby_Magisk_Module.zip')
@@ -136,3 +178,4 @@ with zipfile.ZipFile(zip_filename, 'w', zipfile.ZIP_DEFLATED) as zipf:
             zipf.write(full_path, rel_path)
 
 print(f'Magisk/KernelSU Module package created: {zip_filename} ({os.path.getsize(zip_filename)} bytes)')
+
