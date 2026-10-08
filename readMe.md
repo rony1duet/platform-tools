@@ -28,17 +28,18 @@ platform-tools/
 ├── apk/                          # Android application packages
 │   ├── KernelSU_Next_v3.4.0_33294-release.apk
 │   ├── LunarisDolby.apk          # Rebuilt Lunaris Dolby Atmos APK (rony1duet credit)
-│   ├── MGC_9.6.080_V51_ENG.apk
-│   └── GCam_Config_sweet_k6a.xml
+│   ├── GCam_Config_sweet_k6a.xml # XML configuration for Redmi Note 10 Pro (sweet)
+│   └── (MGC_9.6.xxx APK downloaded dynamically by script into apk/)
 │
 ├── LunarisDolby/                 # Lunaris Dolby Atmos source code repo
 │   └── src/org/lunaris/dolby/ui/components/CreditsDialog.kt
 │
-└── scripts/                      # Native Android shell scripts
+└── scripts/                      # Native Android shell & Python scripts
     ├── debloatSu.sh
     ├── restoreSu.sh
     ├── setupDebloatModule.sh
-    └── setupGcamModule.sh
+    ├── setupGcamModule.sh
+    └── download_gcam.py          # Auto-scraper & downloader for latest BSG MGC 9.6xx APK
 ```
 
 ---
@@ -61,6 +62,7 @@ platform-tools/
  [5] Install / Reinstall KernelSU Next Manager APK
  [6] Restore Debloated Apps
  [7] Check Device & Root Status
+ [8] Download / Update Google Camera (BSG MGC 9.6xx)
  [0] Exit
 ```
 
@@ -70,18 +72,19 @@ platform-tools/
 
 | Path | Description |
 | :--- | :--- |
-| **`autoDebloatAndSetup.bat`** | **Master one-click automation tool for Windows.** Automatically locates `adb/`, `apk/`, and `scripts/`, checks root, runs installs, debloats, and refreshes the launcher. |
+| **`autoDebloatAndSetup.bat`** | **Master one-click automation tool for Windows.** Automatically locates `adb/`, `apk/`, and `scripts/`, checks root, runs installs, debloats, automatically downloads the latest BSG MGC 9.6xx APK if missing, and refreshes the launcher. |
 | **`create_debloat_module.py`** | Python generator that packages the flashable `System_Safe_Debloat_Module.zip` KernelSU/Magisk debloat module with overlayfs masks and boot persistence. |
 | **`System_Safe_Debloat_Module.zip`** | Flashable KernelSU/Magisk module that systemlessly masks out bloatware (Safety Hub, OmniJaws, VoiceAccess, Recorder). |
-| **`create_gcam_module.py`** | Python generator that compiles `GCam_System_Module.zip` with 64-bit native libraries, sweet k6a configuration, and Aperture masking. |
+| **`create_gcam_module.py`** | Python generator that automatically ensures the latest MGC 9.6xx APK is present and compiles `GCam_System_Module.zip` with 64-bit native libraries, sweet k6a configuration, and Aperture masking. |
 | **`GCam_System_Module.zip`** | Flashable KernelSU/Magisk module that installs Google Camera (MGC 9.6.080) as a system app and imports tuned preferences. |
 | **`create_module.py`** | Python generator that packages the flashable `LunarisDolby_Magisk_Module.zip` with permissions, configs, and platform overlays. |
 | **`LunarisDolby_Magisk_Module.zip`** | Flashable Magisk/KernelSU module containing modern Compose Material 3 Lunaris Dolby Atmos. |
+| **`scripts/download_gcam.py`** | Standalone tool that queries BSG's portal on Celso Azevedo, detects the latest MGC 9.6xx release, and automatically downloads the verified `_ENG.apk` package with download progress. |
 | **`scripts/debloatSu.sh`** | Native Android root shell script targeting standalone bloatware (Facebook suite, LinkedIn, Netflix, Mi Home, Google consumer apps, Aperture, Bard, OmniJaws, VoiceAccess, Recorder, Safety Hub). |
 | **`scripts/restoreSu.sh`** | Native Android root shell script that re-installs and re-enables debloated packages. |
 | **`scripts/setupDebloatModule.sh`** | Native Android root shell script that creates a KernelSU systemless module to mask unwanted system apps via overlayfs. |
 | **`scripts/setupGcamModule.sh`** | Native Android root shell script that builds the KernelSU systemless module for Google Camera (MGC 9.6.080), extracts 64-bit native libraries, and replaces the stock Aperture camera. |
-| **`apk/`** | Contains official APKs for KernelSU Next Manager v3.4.0, Google Camera (MGC 9.6.080 V51 ENG), Lunaris Dolby Atmos, and device configs. |
+| **`apk/`** | Contains official APKs for KernelSU Next Manager v3.4.0, Lunaris Dolby Atmos, and device configs. (Large MGC GCam APKs are ignored in Git and downloaded dynamically on demand). |
 | **`adb/`** | Official Google Android SDK platform tools binaries and Windows drivers. |
 | **`appList.txt`** | Reference list of known package names across Android distributions. |
 | **`readMe.md`** | Project documentation and usage guide. |

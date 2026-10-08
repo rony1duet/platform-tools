@@ -29,11 +29,23 @@ with open(os.path.join(aperture_dir, '.replace'), 'w') as f:
 with open(os.path.join(aperture_lens_dir, '.replace'), 'w') as f:
     pass
 
+import sys
+sys.path.insert(0, os.path.join(base_dir, 'scripts'))
+from download_gcam import ensure_gcam_apk
+
 # 3. Copy APK & extract 64-bit native libraries
-src_apk = os.path.join(base_dir, 'apk', 'MGC_9.6.080_V51_ENG.apk')
+src_apk = ensure_gcam_apk(os.path.join(base_dir, 'apk'))
 dest_apk = os.path.join(gcam_app_dir, 'GoogleCameraEng.apk')
 print(f"Staging GoogleCameraEng APK from {src_apk}...")
 shutil.copy2(src_apk, dest_apk)
+
+# Determine version for module.prop
+version_str = "9.6.080"
+apk_basename = os.path.basename(src_apk)
+if 'MGC_' in apk_basename:
+    v_cand = apk_basename.split('MGC_')[-1].replace('_ENG.apk', '').replace('.apk', '')
+    if v_cand:
+        version_str = v_cand
 
 print("Extracting 64-bit native libraries (lib/arm64-v8a/*.so)...")
 with zipfile.ZipFile(src_apk, 'r') as zf:
@@ -92,12 +104,12 @@ with open(os.path.join(meta_dir, 'update-binary'), 'w', newline='\n') as f:
     f.write(update_binary_content)
 
 # 7. module.prop
-module_prop_content = '''id=gcam_system
+module_prop_content = f'''id=gcam_system
 name=Google Camera (MGC) System App
-version=9.6.080
+version={version_str}
 versionCode=96080
 author=BSG / MGC (rony1duet)
-description=Systemlessly installs Google Camera (MGC 9.6.080) with 64-bit native libraries and Sweet (Redmi Note 10 Pro) tuning, replacing stock Aperture camera.
+description=Systemlessly installs Google Camera (MGC {version_str}) with 64-bit native libraries and Sweet (Redmi Note 10 Pro) tuning, replacing stock Aperture camera.
 '''
 with open(os.path.join(mod_dir, 'module.prop'), 'w', newline='\n') as f:
     f.write(module_prop_content)

@@ -4,4 +4,3 @@
 *.exe binary
 *.dll binary
 *.zip binary
-apk/MGC_9.6.080_V51_ENG.apk filter=lfs diff=lfs merge=lfs -text

@@ -26,12 +26,12 @@ EOF
 
 # Find source APK
 BASE_APK=$(pm path com.google.android.GoogleCameraEng 2>/dev/null | head -n 1 | sed 's/package://')
-if [ -z "$BASE_APK" ] || [ ! -f "$BASE_APK" ]; then
-    if [ -f "/data/local/tmp/MGC_9.6.080_V51_ENG.apk" ]; then
-        BASE_APK="/data/local/tmp/MGC_9.6.080_V51_ENG.apk"
-    elif [ -f "/data/local/tmp/GoogleCameraEng.apk" ]; then
-        BASE_APK="/data/local/tmp/GoogleCameraEng.apk"
-    fi
+    for cand in /data/local/tmp/*MGC*ENG*.apk /data/local/tmp/MGC*.apk /data/local/tmp/GoogleCameraEng.apk /data/local/tmp/*MGC*.apk; do
+        if [ -f "$cand" ]; then
+            BASE_APK="$cand"
+            break
+        fi
+    done
 fi
 
 if [ -z "$BASE_APK" ] || [ ! -f "$BASE_APK" ]; then

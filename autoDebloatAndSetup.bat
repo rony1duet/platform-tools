@@ -56,11 +56,12 @@ echo  [4] Setup Google Camera (MGC) System App (Only GCam Install ^& Camera Remo
 echo  [5] Install / Reinstall KernelSU Next Manager APK
 echo  [6] Restore Debloated Apps
 echo  [7] Check Device ^& Root Status
+echo  [8] Download / Update Google Camera (BSG MGC 9.6xx)
 echo  [0] Exit
 echo.
 echo ================================================================
 set "choice="
-set /p "choice=Select an option [0-7]: "
+set /p "choice=Select an option [0-8]: "
 
 :PROCESS_CHOICE
 if "%choice%"=="1" goto FULL_SETUP
@@ -70,6 +71,7 @@ if "%choice%"=="4" goto SETUP_GCAM
 if "%choice%"=="5" goto INSTALL_KSU
 if "%choice%"=="6" goto RESTORE_APPS
 if "%choice%"=="7" goto CHECK_STATUS
+if "%choice%"=="8" goto RUN_DOWNLOAD_GCAM
 if "%choice%"=="0" exit /b 0
 
 echo.
@@ -122,13 +124,72 @@ exit /b 0
 
 :FIND_GCAM_APK
 set "GCAM_APK="
-if exist "%APK_DIR%\MGC_9.6.080_V51_ENG.apk" set "GCAM_APK=%APK_DIR%\MGC_9.6.080_V51_ENG.apk"
-if not defined GCAM_APK (
-    for %%f in ("%APK_DIR%\*MGC*.apk" "%APK_DIR%\*GoogleCamera*.apk" "%BASE_DIR%*MGC*.apk" "%USERPROFILE%\Downloads\*MGC*.apk") do (
-        if exist "%%~f" set "GCAM_APK=%%~f"
+:: 1. Check local apk/ folder for valid APK (>50MB)
+for %%f in ("%APK_DIR%\*MGC*ENG*.apk" "%APK_DIR%\*MGC*.apk" "%APK_DIR%\*GoogleCamera*.apk") do (
+    if exist "%%~f" (
+        if %%~zf gtr 50000000 (
+            set "GCAM_APK=%%~f"
+            goto FOUND_GCAM
+        )
     )
 )
+
+:: 2. Check Downloads folder and stage if available
+for %%f in ("%USERPROFILE%\Downloads\*MGC*ENG*.apk" "%USERPROFILE%\Downloads\*MGC*.apk") do (
+    if exist "%%~f" (
+        if %%~zf gtr 50000000 (
+            echo [INFO] Found valid GCam APK in Downloads: %%~f
+            echo [INFO] Staging into apk\ directory...
+            copy /y "%%~f" "%APK_DIR%\" >nul
+            set "GCAM_APK=%APK_DIR%\%%~nxf"
+            goto FOUND_GCAM
+        )
+    )
+)
+
+:: 3. Not found locally, auto-download latest MGC 9.6xx from BSG
+echo.
+echo [INFO] No valid local Google Camera APK found (or APK incomplete).
+echo [INFO] Automatically downloading latest BSG MGC 9.6xx version from celsoazevedo...
+call :DOWNLOAD_GCAM
+
+:FOUND_GCAM
 exit /b 0
+
+:DOWNLOAD_GCAM
+echo.
+echo ================================================================
+echo       DOWNLOADING LATEST BSG MGC 9.6xx GOOGLE CAMERA APK
+echo ================================================================
+where python.exe >nul 2>&1
+if not errorlevel 1 (
+    python.exe "%SCRIPTS_DIR%\download_gcam.py"
+) else (
+    echo [WARNING] Python not found in system PATH.
+    echo [INFO] Downloading via PowerShell direct mirror...
+    powershell -NoProfile -ExecutionPolicy Bypass -Command "& { [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; $wc = New-Object System.Net.WebClient; $wc.Headers.Add('User-Agent', 'Mozilla/5.0'); Write-Host 'Downloading MGC_9.6.080_V51_ENG.apk...'; $wc.DownloadFile('https://1-dontsharethislink.celsoazevedo.com/file/filesc/MGC_9.6.080_V51_ENG.apk', '%APK_DIR%\MGC_9.6.080_V51_ENG.apk'); Write-Host 'Download complete.' }"
+)
+
+:: Find the downloaded APK
+for %%f in ("%APK_DIR%\*MGC*ENG*.apk" "%APK_DIR%\*MGC*.apk") do (
+    if exist "%%~f" (
+        if %%~zf gtr 50000000 set "GCAM_APK=%%~f"
+    )
+)
+if defined GCAM_APK (
+    echo [OK] Verified GCam APK ready: !GCAM_APK!
+) else (
+    echo [ERROR] GCam APK download could not be completed or verified.
+)
+exit /b 0
+
+:RUN_DOWNLOAD_GCAM
+cls
+call :DOWNLOAD_GCAM
+echo.
+if "%CLI_MODE%"=="1" exit /b 0
+pause
+goto MENU
 
 :FULL_SETUP
 cls
