@@ -21,7 +21,7 @@ name=Google Camera (MGC) System App
 version=9.6.080
 versionCode=96080
 author=BSG / MGC (rony1duet)
-description=Systemlessly installs Google Camera (MGC 9.6.080) with 64-bit native libraries and Sweet (Redmi Note 10 Pro) tuning, replacing stock Aperture camera.
+description=Systemlessly installs Google Camera (MGC 9.6.080) with 64-bit native libraries and Sweet2 (Redmi Note 12 Pro) tuning, replacing stock Aperture camera.
 EOF
 
 # Find source APK
@@ -77,9 +77,9 @@ if [ -f "$CONFIG_SRC" ]; then
     mkdir -p /sdcard/GCam/Configs9
     mkdir -p /sdcard/GCam/Configs8
     mkdir -p /sdcard/Download
-    cp "$CONFIG_SRC" /sdcard/GCam/Configs9/GCam_Config_sweet_k6a.xml 2>/dev/null || true
-    cp "$CONFIG_SRC" /sdcard/GCam/Configs8/GCam_Config_sweet_k6a.xml 2>/dev/null || true
-    cp "$CONFIG_SRC" /sdcard/Download/GCam_Config_sweet_k6a.xml 2>/dev/null || true
+    cp "$CONFIG_SRC" /sdcard/GCam/Configs9/GCam_Config_sweet2.xml 2>/dev/null || true
+    cp "$CONFIG_SRC" /sdcard/GCam/Configs8/GCam_Config_sweet2.xml 2>/dev/null || true
+    cp "$CONFIG_SRC" /sdcard/Download/GCam_Config_sweet2.xml 2>/dev/null || true
     cp "$CONFIG_SRC" /sdcard/Download/MGC.cfg 2>/dev/null || true
 
     PREFS_DIR="/data/data/com.google.android.GoogleCameraEng/shared_prefs"

@@ -31,7 +31,7 @@ platform-tools/
 ├── apk/                          # Android application packages
 │   ├── KernelSU_Next_v3.4.0-32-g763a08d2_33326-release.apk
 │   ├── LunarisDolby.apk          # Rebuilt Lunaris Dolby Atmos APK (rony1duet credit)
-│   ├── GCam_Config_sweet_k6a.xml # XML configuration for Redmi Note 10 Pro (sweet)
+│   ├── GCam_Config_sweet2.xml # XML configuration for Redmi Note 12 Pro (sweet2)
 │   └── (MGC_9.6.xxx APK downloaded dynamically by script into apk/)
 │
 ├── LunarisDolby/                 # Lunaris Dolby Atmos source code repo

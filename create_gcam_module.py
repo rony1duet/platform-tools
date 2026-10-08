@@ -57,8 +57,8 @@ with zipfile.ZipFile(src_apk, 'r') as zf:
                 shutil.copyfileobj(src_file, dst_file)
 
 # 4. Copy GCam XML config
-src_config = os.path.join(base_dir, 'apk', 'GCam_Config_sweet_k6a.xml')
-dest_config = os.path.join(common_dir, 'GCam_Config_sweet_k6a.xml')
+src_config = os.path.join(base_dir, 'apk', 'GCam_Config_sweet2.xml')
+dest_config = os.path.join(common_dir, 'GCam_Config_sweet2.xml')
 shutil.copy2(src_config, dest_config)
 
 # 5. updater-script
@@ -109,7 +109,7 @@ name=Google Camera (MGC) System App
 version={version_str}
 versionCode=96080
 author=BSG / MGC (rony1duet)
-description=Systemlessly installs Google Camera (MGC {version_str}) with 64-bit native libraries and Sweet (Redmi Note 10 Pro) tuning, replacing stock Aperture camera.
+description=Systemlessly installs Google Camera (MGC {version_str}) with 64-bit native libraries and Sweet2 (Redmi Note 12 Pro) tuning, replacing stock Aperture camera.
 '''
 with open(os.path.join(mod_dir, 'module.prop'), 'w', newline='\n') as f:
     f.write(module_prop_content)
@@ -117,7 +117,7 @@ with open(os.path.join(mod_dir, 'module.prop'), 'w', newline='\n') as f:
 # 8. customize.sh
 customize_content = '''ui_print "**************************************************"
 ui_print "      Google Camera (MGC) System App Module       "
-ui_print "      Tuned for Redmi Note 10 Pro (sweet)         "
+ui_print "      Tuned for Redmi Note 12 Pro (sweet2)         "
 ui_print "      Maintained by Md Rony Hossen (rony1duet)    "
 ui_print "**************************************************"
 
@@ -131,14 +131,14 @@ set_perm $MODPATH/system/product/app/GoogleCameraEng/GoogleCameraEng.apk 0 0 064
 set_perm_recursive $MODPATH/system/product/app/GoogleCameraEng/lib 0 0 0755 0644
 
 ui_print "- Importing Sweet (k6a) GCam XML Configuration..."
-CONFIG_FILE="$MODPATH/common/GCam_Config_sweet_k6a.xml"
+CONFIG_FILE="$MODPATH/common/GCam_Config_sweet2.xml"
 if [ -f "$CONFIG_FILE" ]; then
   mkdir -p /sdcard/GCam/Configs9
   mkdir -p /sdcard/GCam/Configs8
   mkdir -p /sdcard/Download
-  cp "$CONFIG_FILE" /sdcard/GCam/Configs9/GCam_Config_sweet_k6a.xml 2>/dev/null || true
-  cp "$CONFIG_FILE" /sdcard/GCam/Configs8/GCam_Config_sweet_k6a.xml 2>/dev/null || true
-  cp "$CONFIG_FILE" /sdcard/Download/GCam_Config_sweet_k6a.xml 2>/dev/null || true
+  cp "$CONFIG_FILE" /sdcard/GCam/Configs9/GCam_Config_sweet2.xml 2>/dev/null || true
+  cp "$CONFIG_FILE" /sdcard/GCam/Configs8/GCam_Config_sweet2.xml 2>/dev/null || true
+  cp "$CONFIG_FILE" /sdcard/Download/GCam_Config_sweet2.xml 2>/dev/null || true
   cp "$CONFIG_FILE" /sdcard/Download/MGC.cfg 2>/dev/null || true
 
   # Direct preference injection if package directory exists

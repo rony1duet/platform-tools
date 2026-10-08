@@ -242,8 +242,8 @@ if defined GCAM_APK (
     echo [INFO] Found APK: !GCAM_APK!
     adb.exe install -r -d -g "!GCAM_APK!"
 )
-set "GCAM_CONFIG=%APK_DIR%\GCam_Config_sweet_k6a.xml"
-if not exist "!GCAM_CONFIG!" set "GCAM_CONFIG=%BASE_DIR%GCam_Config_sweet_k6a.xml"
+set "GCAM_CONFIG=%APK_DIR%\GCam_Config_sweet2.xml"
+if not exist "!GCAM_CONFIG!" set "GCAM_CONFIG=%BASE_DIR%GCam_Config_sweet2.xml"
 if exist "!GCAM_CONFIG!" (
     echo [INFO] Pushing GCam XML config to device...
     adb.exe push "!GCAM_CONFIG!" /data/local/tmp/GCam_Config.xml >nul 2>&1
@@ -428,8 +428,8 @@ if defined GCAM_APK (
     echo [INFO] No local GCam APK found, checking existing installation on device...
 )
 
-set "GCAM_CONFIG=%APK_DIR%\GCam_Config_sweet_k6a.xml"
-if not exist "!GCAM_CONFIG!" set "GCAM_CONFIG=%BASE_DIR%GCam_Config_sweet_k6a.xml"
+set "GCAM_CONFIG=%APK_DIR%\GCam_Config_sweet2.xml"
+if not exist "!GCAM_CONFIG!" set "GCAM_CONFIG=%BASE_DIR%GCam_Config_sweet2.xml"
 if exist "!GCAM_CONFIG!" (
     echo.
     echo [INFO] Pushing GCam XML config to device...
