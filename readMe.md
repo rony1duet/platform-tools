@@ -9,6 +9,8 @@ A reliable, bootloop-proof debloater, KernelSU installer, and Google Camera syst
 ```text
 platform-tools/
 ├── autoDebloatAndSetup.bat       # Master one-click launcher (Windows)
+├── LunarisDolby_Magisk_Module.zip # Flashable Magisk/KernelSU module
+├── create_module.py              # Generator script for Magisk/KernelSU module
 ├── appList.txt                   # Reference package catalog
 ├── readMe.md                     # Project documentation
 │
@@ -21,7 +23,11 @@ platform-tools/
 │
 ├── apk/                          # Android application packages
 │   ├── KernelSU_Next_v3.3.0_33214-release.apk
+│   ├── LunarisDolby.apk          # Rebuilt Lunaris Dolby Atmos APK (rony1duet credit)
 │   └── MGC_9.6.080_V51_ENG.apk
+│
+├── LunarisDolby/                 # Lunaris Dolby Atmos source code repo
+│   └── src/org/lunaris/dolby/ui/components/CreditsDialog.kt
 │
 └── scripts/                      # Native Android shell scripts
     ├── debloatSu.sh

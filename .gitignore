@@ -1,0 +1,4 @@
+# Build tools & temporary decompilation output
+tools/
+dolby_apktool_out/
+*.tmp
