@@ -32,12 +32,19 @@ os.makedirs(vendor_etc_dir, exist_ok=True)
 vendor_vintf_dir = os.path.join(mod_dir, 'system', 'vendor', 'etc', 'vintf', 'manifest')
 os.makedirs(vendor_vintf_dir, exist_ok=True)
 
-# 2. Copy compiled APK
-shutil.copy2(os.path.join(base_dir, 'apk', 'LunarisDolby.apk'), os.path.join(sys_app_dir, 'LunarisDolby.apk'))
+common_dir = os.path.join(mod_dir, 'common')
+os.makedirs(common_dir, exist_ok=True)
 
-dolby_mgr_dir = os.path.join(mod_dir, 'system', 'system_ext', 'priv-app', 'DolbyManager')
-os.makedirs(dolby_mgr_dir, exist_ok=True)
-shutil.copy2(os.path.join(base_dir, 'apk', 'LunarisDolby.apk'), os.path.join(dolby_mgr_dir, 'DolbyManager.apk'))
+# 2. Copy compiled APK to system priv-app and common
+src_apk = os.path.join(base_dir, 'apk', 'LunarisDolby.apk')
+shutil.copy2(src_apk, os.path.join(sys_app_dir, 'LunarisDolby.apk'))
+shutil.copy2(src_apk, os.path.join(common_dir, 'LunarisDolby.apk'))
+
+# Mask old stock DolbyManager app directory with .replace
+old_dolby_dir = os.path.join(mod_dir, 'system', 'system_ext', 'priv-app', 'DolbyManager')
+os.makedirs(old_dolby_dir, exist_ok=True)
+with open(os.path.join(old_dolby_dir, '.replace'), 'w') as f:
+    pass
 
 # 3. Copy permissions and sysconfig
 shutil.copy2(os.path.join(base_dir, 'dolby_dump', 'permissions', 'privapp-permissions-dolby.xml'), os.path.join(sys_perm_dir, 'privapp-permissions-dolby.xml'))
@@ -117,28 +124,51 @@ ui_print "           Lunaris Dolby Atmos Module             "
 ui_print "       Maintained by MD RONY HOSSEN (rony1duet)   "
 ui_print "**************************************************"
 
-ui_print "- Removing stock co.aospa.dolby..."
-pm disable-user --user 0 co.aospa.dolby >/dev/null 2>&1
-pm uninstall -k --user 0 co.aospa.dolby >/dev/null 2>&1
-pm disable-user --user 0 co.aospa.dolby.auto_generated_rro_product__ >/dev/null 2>&1
-pm uninstall -k --user 0 co.aospa.dolby.auto_generated_rro_product__ >/dev/null 2>&1
-pm uninstall org.lunaris.dolby >/dev/null 2>&1
+ui_print "- Disabling stock co.aospa.dolby..."
+pm disable-user --user 0 co.aospa.dolby >/dev/null 2>&1 || true
+pm uninstall -k --user 0 co.aospa.dolby >/dev/null 2>&1 || true
+pm disable-user --user 0 co.aospa.dolby.auto_generated_rro_product__ >/dev/null 2>&1 || true
+pm uninstall -k --user 0 co.aospa.dolby.auto_generated_rro_product__ >/dev/null 2>&1 || true
 
-ui_print "- Installing Lunaris Dolby Atmos..."
+ui_print "- Masking stock DolbyManager app & overlay..."
+mkdir -p $MODPATH/system/system_ext/priv-app/DolbyManager
+touch $MODPATH/system/system_ext/priv-app/DolbyManager/.replace
 mkdir -p $MODPATH/system/product/overlay/DolbyManager__custom_sweet2__auto_generated_rro_product
 touch $MODPATH/system/product/overlay/DolbyManager__custom_sweet2__auto_generated_rro_product/.replace
 
+ui_print "- Setting module file permissions..."
 set_perm_recursive $MODPATH 0 0 0755 0644
-set_perm $MODPATH/system/system_ext/priv-app/DolbyManager/DolbyManager.apk 0 0 0644
 set_perm $MODPATH/system/system_ext/priv-app/LunarisDolby/LunarisDolby.apk 0 0 0644
 set_perm $MODPATH/system/product/overlay/DolbyFrameworksResCommon.apk 0 0 0644
 
-ui_print "- Verifying installation..."
-if [ -f $MODPATH/system/system_ext/priv-app/DolbyManager/DolbyManager.apk ]; then
-  ui_print "- LunarisDolby APK staged successfully as system priv-app!"
+# Register and install Lunaris Dolby Atmos in PackageManager if system is running
+APK_CAND=""
+for cand in "$MODPATH/system/system_ext/priv-app/LunarisDolby/LunarisDolby.apk" "$MODPATH/system_ext/priv-app/LunarisDolby/LunarisDolby.apk" "$MODPATH/common/LunarisDolby.apk"; do
+  if [ -f "$cand" ]; then
+    APK_CAND="$cand"
+    break
+  fi
+done
+
+if [ -n "$APK_CAND" ]; then
+  if [ "$(getprop sys.boot_completed)" = "1" ] || (command -v pm >/dev/null 2>&1 && pm path android >/dev/null 2>&1); then
+    ui_print "- Registering Lunaris Dolby Atmos APK in PackageManager..."
+    pm install -r -d -g "$APK_CAND" >/dev/null 2>&1 || pm install -r "$APK_CAND" >/dev/null 2>&1 || true
+    pm grant org.lunaris.dolby android.permission.MODIFY_AUDIO_ROUTING >/dev/null 2>&1 || true
+    pm grant org.lunaris.dolby android.permission.RECORD_AUDIO >/dev/null 2>&1 || true
+    appops set org.lunaris.dolby GET_USAGE_STATS allow >/dev/null 2>&1 || true
+    ui_print "- Lunaris Dolby Atmos APK installed and permissions granted!"
+  else
+    ui_print "- Note: APK staged and will be finalized on next boot by service.sh"
+  fi
 fi
 
-ui_print "- Installation complete! Please reboot your device to apply system mounts."
+ui_print "- Verifying installation..."
+if [ -f $MODPATH/system/system_ext/priv-app/LunarisDolby/LunarisDolby.apk ]; then
+  ui_print "- LunarisDolby APK staged successfully in module!"
+fi
+
+ui_print "- Installation complete! Please reboot your device to apply system audio mounts."
 '''
 with open(os.path.join(mod_dir, 'customize.sh'), 'w', newline='\n') as f:
     f.write(customize_content)
@@ -152,14 +182,29 @@ until [ "$(getprop sys.boot_completed)" = "1" ]; do
   sleep 2
 done
 
-# Ensure stock co.aospa.dolby is disabled
-pm disable-user --user 0 co.aospa.dolby >/dev/null 2>&1
-pm disable-user --user 0 co.aospa.dolby.auto_generated_rro_product__ >/dev/null 2>&1
+# Ensure stock co.aospa.dolby remains suppressed
+pm disable-user --user 0 co.aospa.dolby >/dev/null 2>&1 || true
+pm disable-user --user 0 co.aospa.dolby.auto_generated_rro_product__ >/dev/null 2>&1 || true
+
+# Install LunarisDolby APK if missing (e.g. flashed in recovery or uninstalled)
+if ! pm path org.lunaris.dolby >/dev/null 2>&1; then
+  APK_CAND=""
+  if [ -f "$MODDIR/system/system_ext/priv-app/LunarisDolby/LunarisDolby.apk" ]; then
+    APK_CAND="$MODDIR/system/system_ext/priv-app/LunarisDolby/LunarisDolby.apk"
+  elif [ -f "$MODDIR/system_ext/priv-app/LunarisDolby/LunarisDolby.apk" ]; then
+    APK_CAND="$MODDIR/system_ext/priv-app/LunarisDolby/LunarisDolby.apk"
+  elif [ -f "$MODDIR/common/LunarisDolby.apk" ]; then
+    APK_CAND="$MODDIR/common/LunarisDolby.apk"
+  fi
+  if [ -n "$APK_CAND" ]; then
+    pm install -r -d -g "$APK_CAND" >/dev/null 2>&1 || pm install -r "$APK_CAND" >/dev/null 2>&1 || true
+  fi
+fi
 
 # Ensure LunarisDolby permissions and appops
-pm grant org.lunaris.dolby android.permission.MODIFY_AUDIO_ROUTING >/dev/null 2>&1
-pm grant org.lunaris.dolby android.permission.RECORD_AUDIO >/dev/null 2>&1
-appops set org.lunaris.dolby GET_USAGE_STATS allow >/dev/null 2>&1
+pm grant org.lunaris.dolby android.permission.MODIFY_AUDIO_ROUTING >/dev/null 2>&1 || true
+pm grant org.lunaris.dolby android.permission.RECORD_AUDIO >/dev/null 2>&1 || true
+appops set org.lunaris.dolby GET_USAGE_STATS allow >/dev/null 2>&1 || true
 '''
 with open(os.path.join(mod_dir, 'service.sh'), 'w', newline='\n') as f:
     f.write(service_content)
@@ -177,4 +222,3 @@ with zipfile.ZipFile(zip_filename, 'w', zipfile.ZIP_DEFLATED) as zipf:
             zipf.write(full_path, rel_path)
 
 print(f'Magisk/KernelSU Module package created: {zip_filename} ({os.path.getsize(zip_filename)} bytes)')
-

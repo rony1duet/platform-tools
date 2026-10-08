@@ -154,6 +154,12 @@ if [ -f "$CONFIG_FILE" ]; then
   fi
 fi
 
+# Register and install Google Camera APK in PackageManager if system is running
+if [ "$(getprop sys.boot_completed)" = "1" ]; then
+  ui_print "- Registering Google Camera APK in PackageManager..."
+  pm install -r -d -g "$MODPATH/system/product/app/GoogleCameraEng/GoogleCameraEng.apk" >/dev/null 2>&1 || pm install -r "$MODPATH/system/product/app/GoogleCameraEng/GoogleCameraEng.apk" >/dev/null 2>&1 || true
+fi
+
 ui_print "- Google Camera System App installed successfully!"
 ui_print "- Please reboot your device to apply system app mounts."
 '''
@@ -171,6 +177,19 @@ done
 
 # Ensure Aperture remains suppressed
 pm disable-user --user 0 org.lineageos.aperture >/dev/null 2>&1
+
+# Ensure Google Camera APK is registered in PackageManager
+if ! pm path com.google.android.GoogleCameraEng >/dev/null 2>&1; then
+  APK_CAND=""
+  if [ -f "$MODDIR/system/product/app/GoogleCameraEng/GoogleCameraEng.apk" ]; then
+    APK_CAND="$MODDIR/system/product/app/GoogleCameraEng/GoogleCameraEng.apk"
+  elif [ -f "$MODDIR/product/app/GoogleCameraEng/GoogleCameraEng.apk" ]; then
+    APK_CAND="$MODDIR/product/app/GoogleCameraEng/GoogleCameraEng.apk"
+  fi
+  if [ -n "$APK_CAND" ]; then
+    pm install -r -d -g "$APK_CAND" >/dev/null 2>&1 || pm install -r "$APK_CAND" >/dev/null 2>&1 || true
+  fi
+fi
 
 # Ensure Google Camera has all required runtime permissions
 pm grant com.google.android.GoogleCameraEng android.permission.CAMERA >/dev/null 2>&1

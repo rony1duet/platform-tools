@@ -49,33 +49,35 @@ echo ================================================================
 echo       ANDROID SAFE DEBLOATER ^& KERNELSU SETUP TOOL
 echo ================================================================
 echo.
-echo  [1] FULL AUTOMATION (Install KernelSU + Safe Debloat + GCam)
+echo  [1] FULL AUTOMATION (Install KernelSU + Safe Debloat + GCam + Dolby)
 echo  [2] Run Safe Debloat Script (Package Uninstaller)
 echo  [3] Install KernelSU Safe Debloat Module (Systemless OverlayFS)
 echo  [4] Setup Google Camera (MGC) System App (Only GCam Install ^& Camera Removal)
-echo  [5] Install / Reinstall KernelSU Next Manager APK
-echo  [6] Restore Debloated Apps
-echo  [7] Check Device ^& Root Status
-echo  [8] Download / Update Google Camera (BSG MGC 9.6xx)
+echo  [5] Setup Lunaris Dolby Atmos (KernelSU Module ^& Compose Material 3 App)
+echo  [6] Install / Reinstall KernelSU Next Manager APK
+echo  [7] Restore Debloated Apps
+echo  [8] Check Device ^& Root Status
+echo  [9] Download / Update Google Camera (BSG MGC 9.6xx)
 echo  [0] Exit
 echo.
 echo ================================================================
 set "choice="
-set /p "choice=Select an option [0-8]: "
+set /p "choice=Select an option [0-9]: "
 
 :PROCESS_CHOICE
 if "%choice%"=="1" goto FULL_SETUP
 if "%choice%"=="2" goto RUN_DEBLOAT
 if "%choice%"=="3" goto SETUP_DEBLOAT_MOD
 if "%choice%"=="4" goto SETUP_GCAM
-if "%choice%"=="5" goto INSTALL_KSU
-if "%choice%"=="6" goto RESTORE_APPS
-if "%choice%"=="7" goto CHECK_STATUS
-if "%choice%"=="8" goto RUN_DOWNLOAD_GCAM
+if "%choice%"=="5" goto SETUP_DOLBY
+if "%choice%"=="6" goto INSTALL_KSU
+if "%choice%"=="7" goto RESTORE_APPS
+if "%choice%"=="8" goto CHECK_STATUS
+if "%choice%"=="9" goto RUN_DOWNLOAD_GCAM
 if "%choice%"=="0" exit /b 0
 
 echo.
-echo Invalid choice. Please select a valid number [0-7].
+echo Invalid choice. Please select a valid number [0-9].
 if "%CLI_MODE%"=="1" exit /b 1
 ping 127.0.0.1 -n 2 >nul
 goto MENU
@@ -114,11 +116,8 @@ exit /b 0
 
 :FIND_KSU_APK
 set "KSU_APK="
-if exist "%APK_DIR%\KernelSU_Next_v3.4.0_33294-release.apk" set "KSU_APK=%APK_DIR%\KernelSU_Next_v3.4.0_33294-release.apk"
-if not defined KSU_APK (
-    for %%f in ("%APK_DIR%\KernelSU*.apk" "%BASE_DIR%KernelSU*.apk") do (
-        if exist "%%~f" set "KSU_APK=%%~f"
-    )
+for %%f in ("%APK_DIR%\KernelSU*.apk" "%BASE_DIR%KernelSU*.apk") do (
+    if exist "%%~f" set "KSU_APK=%%~f"
 )
 exit /b 0
 
@@ -261,13 +260,33 @@ if exist "!GCAM_SCRIPT!" (
     )
 )
 
+echo.
+echo --- Step 4: Installing Lunaris Dolby Atmos ^& Module ---
+set "DOLBY_APK=%APK_DIR%\LunarisDolby.apk"
+if not exist "!DOLBY_APK!" set "DOLBY_APK=%BASE_DIR%LunarisDolby.apk"
+if exist "!DOLBY_APK!" (
+    echo [INFO] Installing Lunaris Dolby Atmos APK...
+    adb.exe install -r -d -g "!DOLBY_APK!"
+    adb.exe push "!DOLBY_APK!" /data/local/tmp/LunarisDolby.apk >nul 2>&1
+    set "DOLBY_SCRIPT=%SCRIPTS_DIR%\setupDolbyModule.sh"
+    if not exist "!DOLBY_SCRIPT!" set "DOLBY_SCRIPT=%BASE_DIR%setupDolbyModule.sh"
+    if exist "!DOLBY_SCRIPT!" (
+        if "%HAS_ROOT%"=="1" (
+            echo [INFO] Configuring KernelSU Systemless Module for Lunaris Dolby Atmos...
+            adb.exe push "!DOLBY_SCRIPT!" /data/local/tmp/setupDolbyModule.sh >nul 2>&1
+            adb.exe shell "su -c 'sh /data/local/tmp/setupDolbyModule.sh'"
+            adb.exe shell rm -f /data/local/tmp/setupDolbyModule.sh >nul 2>&1
+        )
+    )
+)
+
 adb.exe shell am force-stop com.miui.home >nul 2>&1
 adb.exe shell am force-stop com.google.android.apps.nexuslauncher >nul 2>&1
 adb.exe shell am force-stop com.android.launcher3 >nul 2>&1
 
 echo.
 echo ================================================================
-echo [SUCCESS] Full setup, debloat, and GCam configuration finished!
+echo [SUCCESS] Full setup: KernelSU, Debloat, GCam & Dolby finished!
 echo Home screen refreshed.
 echo ================================================================
 if "%CLI_MODE%"=="1" exit /b 0
@@ -439,6 +458,73 @@ echo.
 echo ================================================================
 echo [SUCCESS] Google Camera configured as system camera app!
 echo Aperture replaced and default camera handlers updated.
+echo ================================================================
+if "%CLI_MODE%"=="1" exit /b 0
+pause
+goto MENU
+
+:SETUP_DOLBY
+cls
+echo ================================================================
+echo       INSTALLING LUNARIS DOLBY ATMOS KERNELSU MODULE ^& APP
+echo ================================================================
+call :DETECT_ROOT
+set "DOLBY_APK=%APK_DIR%\LunarisDolby.apk"
+if not exist "!DOLBY_APK!" set "DOLBY_APK=%BASE_DIR%LunarisDolby.apk"
+
+if not exist "!DOLBY_APK!" (
+    echo [ERROR] LunarisDolby.apk not found in apk\ or current folder!
+    if "%CLI_MODE%"=="1" exit /b 1
+    pause
+    goto MENU
+)
+
+set "DOLBY_SCRIPT=%SCRIPTS_DIR%\setupDolbyModule.sh"
+if not exist "!DOLBY_SCRIPT!" set "DOLBY_SCRIPT=%BASE_DIR%setupDolbyModule.sh"
+
+if not exist "!DOLBY_SCRIPT!" (
+    echo [ERROR] setupDolbyModule.sh not found!
+    if "%CLI_MODE%"=="1" exit /b 1
+    pause
+    goto MENU
+)
+
+echo.
+echo [INFO] Installing Lunaris Dolby Atmos APK via ADB...
+adb.exe install -r -d -g "!DOLBY_APK!"
+
+echo.
+echo [INFO] Pushing module staging files to device...
+adb.exe push "!DOLBY_APK!" /data/local/tmp/LunarisDolby.apk >nul 2>&1
+if exist "%BASE_DIR%dolby_dump\permissions\privapp-permissions-dolby.xml" (
+    adb.exe push "%BASE_DIR%dolby_dump\permissions\privapp-permissions-dolby.xml" /data/local/tmp/privapp-permissions-dolby.xml >nul 2>&1
+    adb.exe push "%BASE_DIR%dolby_dump\permissions\preinstalled-packages-platform-dolby.xml" /data/local/tmp/preinstalled-packages-platform-dolby.xml >nul 2>&1
+    adb.exe push "%BASE_DIR%dolby_dump\overlay\DolbyFrameworksResCommon.apk" /data/local/tmp/DolbyFrameworksResCommon.apk >nul 2>&1
+    adb.exe push "%BASE_DIR%dolby_dump\vendor_etc\dax-default.xml" /data/local/tmp/dax-default.xml >nul 2>&1
+    adb.exe push "%BASE_DIR%dolby_dump\vendor_etc\media_codecs_dolby_audio.xml" /data/local/tmp/media_codecs_dolby_audio.xml >nul 2>&1
+    adb.exe push "%BASE_DIR%dolby_dump\vendor_etc\vendor.dolby.hardware.dms@2.0-service.xml" /data/local/tmp/vendor.dolby.hardware.dms@2.0-service.xml >nul 2>&1
+    adb.exe push "%BASE_DIR%dolby_dump\vendor_etc\vendor.dolby.media.c2.xml" /data/local/tmp/vendor.dolby.media.c2.xml >nul 2>&1
+)
+
+if exist "%BASE_DIR%LunarisDolby_Magisk_Module.zip" (
+    echo [INFO] Copying flashable LunarisDolby_Magisk_Module.zip to /sdcard/Download/...
+    adb.exe push "%BASE_DIR%LunarisDolby_Magisk_Module.zip" /sdcard/Download/LunarisDolby_Magisk_Module.zip >nul 2>&1
+)
+
+if "%HAS_ROOT%"=="1" (
+    echo [INFO] Configuring KernelSU Systemless Module for Lunaris Dolby Atmos...
+    adb.exe push "!DOLBY_SCRIPT!" /data/local/tmp/setupDolbyModule.sh >nul 2>&1
+    adb.exe shell "su -c 'sh /data/local/tmp/setupDolbyModule.sh'"
+    adb.exe shell rm -f /data/local/tmp/setupDolbyModule.sh >nul 2>&1
+)
+
+echo.
+echo [INFO] Launching Lunaris Dolby Atmos...
+adb.exe shell am start -n org.lunaris.dolby/.ui.DolbyActivity >nul 2>&1
+
+echo.
+echo ================================================================
+echo [SUCCESS] Lunaris Dolby Atmos installed and configured successfully!
 echo ================================================================
 if "%CLI_MODE%"=="1" exit /b 0
 pause
