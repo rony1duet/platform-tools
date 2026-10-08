@@ -2,6 +2,9 @@
 
 A reliable, bootloop-proof debloater, KernelSU installer, and Google Camera system-app toolkit for Xiaomi HyperOS / MIUI and AOSP / EvolutionX / LineageOS devices.
 
+[![Build Modules](https://github.com/rony1duet/platform-tools/actions/workflows/build-modules.yml/badge.svg)](https://github.com/rony1duet/platform-tools/actions/workflows/build-modules.yml)
+[![GitHub release](https://img.shields.io/github/v/release/rony1duet/platform-tools?include_prereleases&label=Latest%20Release)](https://github.com/rony1duet/platform-tools/releases)
+
 ---
 
 ## Directory Structure

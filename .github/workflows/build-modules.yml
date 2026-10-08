@@ -1,0 +1,124 @@
+name: Build Android Magisk & KernelSU Modules
+
+on:
+  push:
+    branches:
+      - master
+      - main
+    tags:
+      - 'v*'
+  pull_request:
+    branches:
+      - master
+      - main
+  workflow_dispatch:
+    inputs:
+      create_release:
+        description: 'Publish as GitHub Release'
+        required: false
+        type: boolean
+        default: false
+      release_tag:
+        description: 'Release Tag (leave blank to auto-generate tag with timestamp)'
+        required: false
+        type: string
+        default: ''
+
+permissions:
+  contents: write
+
+jobs:
+  build-modules:
+    name: Build All 3 Flashable Modules
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Build System Safe Debloat Module
+        run: |
+          echo "::group::Building System Safe Debloat Module"
+          python create_debloat_module.py
+          ls -lh System_Safe_Debloat_Module.zip
+          echo "::endgroup::"
+
+      - name: Build Lunaris Dolby Atmos Module
+        run: |
+          echo "::group::Building Lunaris Dolby Atmos Module"
+          python create_module.py
+          ls -lh LunarisDolby_Magisk_Module.zip
+          echo "::endgroup::"
+
+      - name: Build Google Camera (MGC) System Module
+        run: |
+          echo "::group::Building Google Camera (MGC) System Module"
+          python create_gcam_module.py
+          ls -lh GCam_System_Module.zip
+          echo "::endgroup::"
+
+      - name: Generate Checksums & Job Summary
+        id: checksums
+        run: |
+          echo "=== SHA256 Checksums ===" > checksums.sha256
+          sha256sum System_Safe_Debloat_Module.zip >> checksums.sha256
+          sha256sum LunarisDolby_Magisk_Module.zip >> checksums.sha256
+          sha256sum GCam_System_Module.zip >> checksums.sha256
+          cat checksums.sha256
+
+          echo "## 📦 Flashable Modules Build Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Module Package | File Size | SHA256 Checksum |" >> $GITHUB_STEP_SUMMARY
+          echo "| :--- | :--- | :--- |" >> $GITHUB_STEP_SUMMARY
+          for f in System_Safe_Debloat_Module.zip LunarisDolby_Magisk_Module.zip GCam_System_Module.zip; do
+            SIZE=$(ls -lh "$f" | awk '{print $5}')
+            HASH=$(sha256sum "$f" | awk '{print $1}')
+            echo "| \`$f\` | $SIZE | \`$HASH\` |" >> $GITHUB_STEP_SUMMARY
+          done
+
+      - name: Upload Flashable ZIP Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: Magisk-KernelSU-Modules
+          path: |
+            System_Safe_Debloat_Module.zip
+            LunarisDolby_Magisk_Module.zip
+            GCam_System_Module.zip
+            checksums.sha256
+          retention-days: 30
+
+      - name: Determine Release Tag
+        id: tag_info
+        if: startsWith(github.ref, 'refs/tags/v') || github.event.inputs.create_release == 'true'
+        run: |
+          if [ -n "${{ github.event.inputs.release_tag }}" ]; then
+            TAG="${{ github.event.inputs.release_tag }}"
+          elif [[ "${{ github.ref }}" == refs/tags/* ]]; then
+            TAG="${GITHUB_REF#refs/tags/}"
+          else
+            TAG="v$(date +'%Y.%m.%d-%H%M')"
+          fi
+          echo "release_tag=$TAG" >> $GITHUB_OUTPUT
+
+      - name: Publish GitHub Release
+        if: startsWith(github.ref, 'refs/tags/v') || github.event.inputs.create_release == 'true'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.tag_info.outputs.release_tag }}
+          name: "Release ${{ steps.tag_info.outputs.release_tag }}"
+          files: |
+            System_Safe_Debloat_Module.zip
+            LunarisDolby_Magisk_Module.zip
+            GCam_System_Module.zip
+            checksums.sha256
+          generate_release_notes: true
+          draft: false
+          prerelease: false
