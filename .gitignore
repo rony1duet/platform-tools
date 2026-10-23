@@ -25,6 +25,8 @@ GCam_System_Module/
 
 # Large generated flashable module package (>100MB exceeds GitHub push limits; rebuilt via create_gcam_module.py)
 GCam_System_Module.zip
+Combined_All_Module.zip
+Combined_All_Module/
 
 # Large Google Camera (MGC) APK (>300MB exceeds GitHub push limits; downloaded dynamically on script run)
 apk/*MGC*.apk

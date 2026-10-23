@@ -68,3 +68,7 @@ echo "================================================================"
 echo " [SUCCESS] Debloat finished! Home screen refreshed."
 echo " Newly Removed: $removed_count | Already Removed: $already_removed"
 echo "================================================================"
+
+pm uninstall -k --user 0 com.android.stk 2>/dev/null || true
+pm uninstall -k --user 0 com.caf.fmradio 2>/dev/null || true
+pm uninstall -k --user 0 com.miui.miwallpaper 2>/dev/null || true
