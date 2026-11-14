@@ -11,7 +11,7 @@ This turnkey bundle contains all automated scripts and binary prebuilts needed t
    - Dynamic summary tile in **Settings → Sound & vibration → Dolby Atmos**.
 
 2. **System Debloat**:
-   - Partition-level debloat: removes `Aperture` (7.9 MB), `SafetyHubPrebuilt` (29 MB), `FM2` (1.4 MB), `ShinkaiWalls` (7.6 MB), `MagicPortraitWallpapers` (54 MB), `Stk` (3.8 MB), and `DocumentsUIGoogle` (10 MB).
+   - Partition-level debloat: removes `Aperture` (7.9 MB), `SafetyHubPrebuilt` (29 MB), `FM2` (1.4 MB), `ShinkaiWalls` (7.6 MB), `MagicPortraitWallpapers` (54 MB), and `Stk` (3.8 MB).
    - Package manager uninstall for user 0 (`pm uninstall -k --user 0`).
 
 3. **GCam V52 & Config**:
