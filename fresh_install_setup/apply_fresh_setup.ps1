@@ -176,6 +176,29 @@ cat << 'EOF' > /data/adb/post-fs-data.d/01_device_props.sh
 #!/system/bin/sh
 RESETPROP="/data/adb/ksu/bin/resetprop"
 
+# Brand & Manufacturer
+\$RESETPROP ro.product.brand "Redmi"
+\$RESETPROP ro.product.system.brand "Redmi"
+\$RESETPROP ro.product.system_ext.brand "Redmi"
+\$RESETPROP ro.product.product.brand "Redmi"
+\$RESETPROP ro.product.vendor.brand "Redmi"
+\$RESETPROP ro.product.odm.brand "Redmi"
+
+\$RESETPROP ro.product.manufacturer "Xiaomi"
+\$RESETPROP ro.product.system.manufacturer "Xiaomi"
+\$RESETPROP ro.product.system_ext.manufacturer "Xiaomi"
+\$RESETPROP ro.product.product.manufacturer "Xiaomi"
+\$RESETPROP ro.product.vendor.manufacturer "Xiaomi"
+\$RESETPROP ro.product.odm.manufacturer "Xiaomi"
+
+# Name
+\$RESETPROP ro.product.name "sweet2"
+\$RESETPROP ro.product.system.name "sweet2"
+\$RESETPROP ro.product.system_ext.name "sweet2"
+\$RESETPROP ro.product.product.name "sweet2"
+\$RESETPROP ro.product.vendor.name "sweet2"
+\$RESETPROP ro.product.odm.name "sweet2"
+
 # Model
 \$RESETPROP ro.product.model "Redmi Note 12 Pro"
 \$RESETPROP ro.product.system.model "Redmi Note 12 Pro"
@@ -210,6 +233,27 @@ EOF
 chmod 755 /data/adb/post-fs-data.d/01_device_props.sh
 
 # Apply immediate live resetprop
+/data/adb/ksu/bin/resetprop ro.product.brand "Redmi"
+/data/adb/ksu/bin/resetprop ro.product.system.brand "Redmi"
+/data/adb/ksu/bin/resetprop ro.product.system_ext.brand "Redmi"
+/data/adb/ksu/bin/resetprop ro.product.product.brand "Redmi"
+/data/adb/ksu/bin/resetprop ro.product.vendor.brand "Redmi"
+/data/adb/ksu/bin/resetprop ro.product.odm.brand "Redmi"
+
+/data/adb/ksu/bin/resetprop ro.product.manufacturer "Xiaomi"
+/data/adb/ksu/bin/resetprop ro.product.system.manufacturer "Xiaomi"
+/data/adb/ksu/bin/resetprop ro.product.system_ext.manufacturer "Xiaomi"
+/data/adb/ksu/bin/resetprop ro.product.product.manufacturer "Xiaomi"
+/data/adb/ksu/bin/resetprop ro.product.vendor.manufacturer "Xiaomi"
+/data/adb/ksu/bin/resetprop ro.product.odm.manufacturer "Xiaomi"
+
+/data/adb/ksu/bin/resetprop ro.product.name "sweet2"
+/data/adb/ksu/bin/resetprop ro.product.system.name "sweet2"
+/data/adb/ksu/bin/resetprop ro.product.system_ext.name "sweet2"
+/data/adb/ksu/bin/resetprop ro.product.product.name "sweet2"
+/data/adb/ksu/bin/resetprop ro.product.vendor.name "sweet2"
+/data/adb/ksu/bin/resetprop ro.product.odm.name "sweet2"
+
 /data/adb/ksu/bin/resetprop ro.product.model "Redmi Note 12 Pro"
 /data/adb/ksu/bin/resetprop ro.product.system.model "Redmi Note 12 Pro"
 /data/adb/ksu/bin/resetprop ro.product.system_ext.model "Redmi Note 12 Pro"

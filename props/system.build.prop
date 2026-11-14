@@ -1,11 +1,11 @@
 # from generate-common-build-props
 # These properties identify this partition image.
 ####################################
-ro.product.system.brand=google
+ro.product.system.brand=Redmi
 ro.product.system.device=sweet2
-ro.product.system.manufacturer=Google
+ro.product.system.manufacturer=Xiaomi
 ro.product.system.model=Redmi Note 12 Pro
-ro.product.system.name=kodiak_beta
+ro.product.system.name=sweet2
 ro.system.product.cpu.abilist=arm64-v8a,armeabi-v7a,armeabi
 ro.system.product.cpu.abilist32=armeabi-v7a,armeabi
 ro.system.product.cpu.abilist64=arm64-v8a

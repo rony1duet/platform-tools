@@ -1,11 +1,11 @@
 # from generate-common-build-props
 # These properties identify this partition image.
 ####################################
-ro.product.product.brand=google
+ro.product.product.brand=Redmi
 ro.product.product.device=sweet2
-ro.product.product.manufacturer=Google
+ro.product.product.manufacturer=Xiaomi
 ro.product.product.model=Redmi Note 12 Pro
-ro.product.product.name=kodiak_beta
+ro.product.product.name=sweet2
 ro.product.build.date=Sat Oct 24 18:59:28 WIB 2026
 ro.product.build.date.utc=1792843168
 ro.product.build.fingerprint=google/kodiak_beta/kodiak:17/DP11.261002.005/16594701:user/release-keys
