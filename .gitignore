@@ -33,6 +33,8 @@ apk/*MGC*.apk
 apk/*GoogleCamera*.apk
 apk/*.apk.part
 apk/*.apk.tmp
+fresh_install_setup/files/*MGC*.apk
+*DolbyManager.apk
 
 # Intermediate APK build & signing artifacts
 *.idsig

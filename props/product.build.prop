@@ -1,0 +1,131 @@
+# from generate-common-build-props
+# These properties identify this partition image.
+####################################
+ro.product.product.brand=google
+ro.product.product.device=sweet2
+ro.product.product.manufacturer=Google
+ro.product.product.model=Redmi Note 12 Pro
+ro.product.product.name=kodiak_beta
+ro.product.build.date=Sat Oct 24 18:59:28 WIB 2026
+ro.product.build.date.utc=1792843168
+ro.product.build.fingerprint=google/kodiak_beta/kodiak:17/DP11.261002.005/16594701:user/release-keys
+ro.product.build.id=CP2A.260605.016
+ro.product.build.uuid=ngDNw3yYAVw5aJEaFYxKyW0cGsGvS35V-qWnW-My4h8
+ro.product.build.tags=test-keys
+ro.product.build.type=user
+ro.product.build.version.incremental=1792843168
+ro.product.build.version.release=17
+ro.product.build.version.release_or_codename=17
+ro.product.build.version.sdk=37
+ro.product.build.version.sdk_full=37.0
+####################################
+# from gen_build_prop.py:generate_build_info
+####################################
+# begin build properties
+ro.build.fingerprint=google/kodiak_beta/kodiak:17/DP11.261002.005/16594701:user/release-keys
+ro.build.id=CP2A.260605.016
+ro.build.uuid=ngDNw3yYAVw5aJEaFYxKyW0cGsGvS35V-qWnW-My4h8
+ro.build.display.id=CP2A.260605.016
+ro.build.version.incremental=1792843168
+ro.build.version.sdk=37
+ro.build.version.sdk_full=37.0
+ro.build.version.preview_sdk=0
+ro.build.version.preview_sdk_fingerprint=REL
+ro.build.version.codename=REL
+ro.build.version.all_codenames=REL
+ro.build.version.known_codenames=Base,Base11,Cupcake,Donut,Eclair,Eclair01,EclairMr1,Froyo,Gingerbread,GingerbreadMr1,Honeycomb,HoneycombMr1,HoneycombMr2,IceCreamSandwich,IceCreamSandwichMr1,JellyBean,JellyBeanMr1,JellyBeanMr2,Kitkat,KitkatWatch,Lollipop,LollipopMr1,M,N,NMr1,O,OMr1,P,Q,R,S,Sv2,Tiramisu,UpsideDownCake,VanillaIceCream,Baklava,CANARY,CinnamonBun
+ro.build.version.release=17
+ro.build.version.release_or_codename=17
+ro.build.version.release_or_preview_display=17
+ro.build.version.security_patch=2026-10-01
+ro.build.version.base_os=
+ro.build.version.min_supported_target_sdk=28
+ro.build.date=Sat Oct 24 18:59:28 WIB 2026
+ro.build.date.utc=1792843168
+ro.build.type=user
+ro.build.user=syeka
+ro.build.host=srvr-dev-sek
+ro.build.tags=test-keys
+ro.build.flavor=shinkai_sweet2-user
+ro.custom.device=sweet2
+# ro.product.cpu.abi and ro.product.cpu.abi2 are obsolete,
+# use ro.product.cpu.abilist instead.
+ro.product.cpu.abi=arm64-v8a
+ro.product.locale=en-US
+ro.wifi.channels=
+# Do not try to parse description or thumbprint
+ro.build.description=kodiak_beta-user 17 DP11.261002.005 16594701 release-keys
+# end build properties
+####################################
+# from device/xiaomi/sm6150-common/product.prop
+####################################
+# App launch prefetching (IORapd)
+ro.iorapd.enable=false
+iorapd.perfetto.enable=false
+iorapd.readahead.enable=false
+persist.device_config.runtime_native_boot.iorap_readahead_enable=false
+# eBPF
+ro.bpf.kver_override=5.10.239
+# Phantom process monitoring
+sys.fflag.override.settings_enable_monitor_phantom_procs=false
+# Disable built-in PIHooks
+persist.sys.pihooks.disable.gms_props=true
+persist.sys.pihooks.disable.gms_key_attestation_block=true
+####################################
+# from variable ADDITIONAL_PRODUCT_PROPERTIES
+####################################
+dalvik.vm.systemservercompilerfilter=speed-profile
+ro.product.page_size=4096
+ro.build.characteristics=default
+ro.product.cpu.pagesize.max=4096
+ro.dalvik.vm.enable_uffd_gc=true
+####################################
+# from variable PRODUCT_PRODUCT_PROPERTIES
+####################################
+persist.wm.extensions.enabled=true
+ro.com.google.clientidbase=android-google
+persist.sys.strictmode.disable=true
+ro.control_privapp_permissions=enforce
+ro.storage_manager.enabled=true
+dalvik.vm.systemuicompilerfilter=speed
+ro.lineagelegal.url=https://lineageos.org/legal
+media.recorder.show_manufacturer_and_model=true
+ro.support_one_handed_mode=true
+net.tethering.noprovisioning=true
+ro.com.android.mobiledata=false
+is_expressive_design_enabled=true
+ro.opa.eligible_device=true
+ro.setupwizard.enterprise_mode=1
+ro.setupwizard.esim_cid_ignore=00000001
+setupwizard.feature.baseline_setupwizard_enabled=true
+setupwizard.feature.day_night_mode_enabled=true
+setupwizard.feature.default_locale_enhancement_enabled=true
+setupwizard.feature.device_info_icon_enabled=true
+setupwizard.feature.enable_gil=
+setupwizard.feature.enable_gil_logging=true
+setupwizard.feature.enable_minors_setup_flow=true
+setupwizard.feature.enable_parental_notice_activity=true
+setupwizard.feature.enable_parental_setup=true
+setupwizard.feature.enhanced_setup_design_metrics=true
+setupwizard.feature.is_suw_onboarding_contract_enabled=true
+setupwizard.feature.joined_up_loading=true
+setupwizard.feature.locale_agnostic_enabled=true
+setupwizard.feature.enable_quick_start_flow=true
+setupwizard.feature.enable_restore_anytime=true
+setupwizard.feature.enable_wifi_tracker=true
+setupwizard.feature.lifecycle_refactoring=true
+setupwizard.feature.notification_refactoring=true
+setupwizard.feature.portal_notification=true
+setupwizard.feature.provisioning_profile_mode=true
+setupwizard.theme=glif_expressive
+ro.config.ringtone=Your_new_adventure.ogg
+ro.config.notification_sound=Eureka.ogg
+ro.config.alarm_alert=Fresh_start.ogg
+debug.graphics.game_default_frame_rate.disabled=true
+ro.shinkai.build.date=20261024-1159
+ro.custom.device=sweet2
+ro.shinkai.maintainer=rehanseekap
+ro.shinkai.version=heptakaideka-sweet2-20261024-1159
+net.shinkai.build_type=ci
+persist.sys.activity_anim_perf_override=false
+# end of file
