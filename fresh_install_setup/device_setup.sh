@@ -14,13 +14,15 @@ mount -o remount,rw /product 2>/dev/null || true
 mount -o remount,rw /vendor 2>/dev/null || true
 mount -o remount,rw /odm 2>/dev/null || true
 
-echo "==> [3/5] Debloating bloatware (Aperture, SafetyHub, FM2, ShinkaiWalls, Stk)..."
+echo "==> [3/5] Debloating bloatware (Aperture, SafetyHub, FM2, ShinkaiWalls, Stk, DocumentsUI)..."
 rm -rf /product/app/Aperture
 rm -rf /product/priv-app/SafetyHubPrebuilt
 rm -rf /system_ext/app/FM2
 rm -rf /system_ext/app/ShinkaiWalls
 rm -rf /system_ext/priv-app/MagicPortraitWallpapers
 rm -rf /system/app/Stk
+rm -rf /system/priv-app/DocumentsUIGoogle
+rm -f /product/overlay/DocumentsUIOverlay.apk /product/overlay/PixelDocumentsUIGoogleOverlay_GMS.apk
 sync
 
 # Terminate processes holding open deleted descriptors to reclaim blocks immediately
@@ -36,6 +38,10 @@ pm uninstall -k --user 0 com.caf.fmradio 2>/dev/null || true
 pm uninstall -k --user 0 com.shinkai.wallpapers 2>/dev/null || true
 pm uninstall -k --user 0 com.android.stk 2>/dev/null || true
 pm uninstall -k --user 0 com.google.android.apps.safetyhub 2>/dev/null || true
+pm uninstall com.google.android.documentsui 2>/dev/null || true
+pm uninstall -k --user 0 com.google.android.documentsui 2>/dev/null || true
+pm uninstall -k --user 0 com.android.documentsui.overlay 2>/dev/null || true
+pm uninstall -k --user 0 com.google.android.documentsui.theme.pixel_gms 2>/dev/null || true
 
 echo "==> [4/5] Deploying LunarisDolby system app & permissions..."
 mkdir -p /system_ext/priv-app/DolbyManager
