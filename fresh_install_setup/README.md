@@ -1,4 +1,4 @@
-# Redmi Note 12 Pro 4G (`sweet2` / `sweet_k6a`) Fresh Setup Bundle
+# Redmi Note 12 Pro (`sweet2` / `sweet_k6a`) Fresh Setup Bundle
 
 This turnkey bundle contains all automated scripts and binary prebuilts needed to completely configure your device after a factory reset or clean ROM flash.
 
@@ -20,8 +20,9 @@ This turnkey bundle contains all automated scripts and binary prebuilts needed t
    - All runtime permissions granted (Camera, Audio, Fine/Coarse Location, Media, Storage).
 
 4. **Device Properties Correction**:
-   - Replaces `Pixel 11 Pro XL` with `Redmi Note 12 Pro 4G`.
-   - Replaces `kodiak` with `sweet2`.
+   - Replaces `Pixel 11 Pro XL` with `Redmi Note 12 Pro`.
+   - Replaces `kodiak` / `kodiak_beta` with `sweet2`.
+   - Sets brand to `Redmi` and manufacturer to `Xiaomi`.
    - Patches all 5 partition `build.prop` files (`/system`, `/system_ext`, `/product`, `/vendor`, `/odm`).
    - Installs boot script `/data/adb/post-fs-data.d/01_device_props.sh` using KernelSU's `resetprop` for persistence.
 
