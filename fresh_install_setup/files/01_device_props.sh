@@ -55,4 +55,5 @@ $RESETPROP vendor.usb.product_string "Redmi Note 12 Pro"
 # Settings
 settings put global device_name "Redmi Note 12 Pro" 2>/dev/null || true
 settings put secure bluetooth_name "Redmi Note 12 Pro" 2>/dev/null || true
-settings put secure show_rotation_suggestions 0 2>/dev/null || true
+settings put secure show_rotation_suggestions 1 2>/dev/null || true
+settings put system lockscreen_rotation 0 2>/dev/null || true

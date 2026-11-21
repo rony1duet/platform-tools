@@ -26,8 +26,9 @@ This turnkey bundle contains all automated scripts and binary prebuilts needed t
    - Patches all 5 partition `build.prop` files (`/system`, `/system_ext`, `/product`, `/vendor`, `/odm`).
    - Installs boot script `/data/adb/post-fs-data.d/01_device_props.sh` using KernelSU's `resetprop` for persistence.
 
-5. **Lockscreen Auto-Rotate Button Fix**:
-   - Disables floating rotate suggestion button via `settings put secure show_rotation_suggestions 0`.
+5. **Auto-Rotate Suggestion Configuration**:
+   - Enables auto-rotate suggestion pill in apps via `settings put secure show_rotation_suggestions 1`.
+   - Prevents suggestions/rotation on lockscreen via `settings put system lockscreen_rotation 0`.
 
 ---
 
